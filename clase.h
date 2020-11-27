@@ -207,6 +207,24 @@ public:
 		else if (strcmp(this->numeComanda, "CREATE") == 0) {
 
 		}
+		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
+
+		}
+		else if (strcmp(this->numeComanda, "INSERT") == 0) {
+
+		}
+		else if (strcmp(this->numeComanda, "DELETE") == 0) {
+
+		}
+		else if (strcmp(this->numeComanda, "DROP") == 0) {
+
+		}
+		else if (strcmp(this->numeComanda, "DISPLAY") == 0) {
+
+		}
+		else {
+			throw ExceptieComandaGresita();
+		}
 	}
 
 	~Interpretor() {
