@@ -50,7 +50,7 @@ public:
 			this->numeColoane[nrCol] = new char[strlen(this->parametriIntrare[j]) + 1];
 			strcpy(this->numeColoane[nrCol], this->parametriIntrare[j]);
 		}
-
+		bool existaWhere = false;
 
 		if (index) {
 			this->numeTabela = new char[strlen(this->parametriIntrare[index + 2])];
@@ -59,6 +59,7 @@ public:
 		index += 3;
 		bool existaColoana = false;
 		if (index < this->nrParametriIntrare) {
+			existaWhere = true;
 			for (int i = 0; i < nrCol; i++) {
 				if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
 					existaColoana = true;
@@ -67,22 +68,27 @@ public:
 			}
 		}
 		if (nrCol == 1) {
-			cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
-				this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
-				" este " << this->parametriIntrare[6]<<endl;
+			if (existaWhere) {
+				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
+					" este " << this->parametriIntrare[6] << endl;
+			}
 		}
 		else if (nrCol > 1) {
-			cout << "Se vor selecta coloanele ";
-			int k = 1;
-			for (k=1; k <= nrCol; k++) {
-				cout << this->parametriIntrare[k] << ", ";
+			if (existaWhere) {
+				cout << "Se vor selecta coloanele ";
+				int k = 1;
+				for (k = 1; k <= nrCol; k++) {
+					cout << this->parametriIntrare[k] << ", ";
+				}
+				cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3] <<
+					" este " << this->parametriIntrare[k + 4] << endl;
 			}
-			cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3]<<
-				" este " << this->parametriIntrare[k + 4]<<endl;
 		}
 		else {
 			throw ExceptieComandaGresita();
 		}
+
 	}
 
 	friend class Interpretor;
