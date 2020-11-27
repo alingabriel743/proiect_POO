@@ -9,7 +9,7 @@ using namespace std;
 class ExceptieComandaGresita {
 	string mesaj = "";
 public:
-	ExceptieComandaGresita(){}
+	ExceptieComandaGresita() {}
 	ExceptieComandaGresita(string eroare) {
 		this->mesaj = eroare;
 	}
@@ -66,8 +66,24 @@ public:
 				}
 			}
 		}
+		if (nrCol == 1) {
+			cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+				this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
+				" este " << this->parametriIntrare[6]<<endl;
+		}
+		else if (nrCol > 1) {
+			cout << "Se vor selecta coloanele ";
+			int k = 1;
+			for (k=1; k <= nrCol; k++) {
+				cout << this->parametriIntrare[k] << ", ";
+			}
+			cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3]<<
+				" este " << this->parametriIntrare[k + 4]<<endl;
+		}
+		else {
+			throw ExceptieComandaGresita();
+		}
 	}
-	// afisam un mesaj pentru a informa in legatura cu utilitatea comenzii
 
 	friend class Interpretor;
 };
@@ -158,7 +174,7 @@ public:
 			this->parametriComanda[i] = new char[strlen(numec) + 1];
 			strcpy(this->parametriComanda[i], numec);
 			numec = strtok(nullptr, delim);
-			if(numec) i++;
+			if (numec) i++;
 		}
 		this->numeComanda = this->parametriComanda[0];
 	}
@@ -183,7 +199,7 @@ public:
 
 	friend class generareObiecte;
 	friend class Select;
-	
+
 	// ca sa facem conexiunea folosim si noi un operator
 	friend ostream& operator<<(ostream& consola, Interpretor& inte) {
 		//consola << inte.nrParametri;
@@ -193,4 +209,3 @@ public:
 	}
 
 };
-
