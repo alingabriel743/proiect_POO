@@ -108,40 +108,63 @@ public:
 };
 
 class Create {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
 class Update {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
 class Insert {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
 class Delete {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
 
-
 class Drop {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
 class Display {
+private:
+	char** parametriIntrare = nullptr;
+	int nrParametriIntrare;
 
 public:
+
 	friend class Interpretor;
 };
 
@@ -217,22 +240,22 @@ public:
 			s.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "CREATE") == 0) {
-
+			// Create c();
 		}
 		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
-
+			// Update u();
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
-
+			//Insert i();
 		}
 		else if (strcmp(this->numeComanda, "DELETE") == 0) {
-
+			//Delete del();
 		}
 		else if (strcmp(this->numeComanda, "DROP") == 0) {
-
+			//Drop dr();
 		}
 		else if (strcmp(this->numeComanda, "DISPLAY") == 0) {
-
+			//Display dis();
 		}
 		else {
 			throw ExceptieComandaGresita();
