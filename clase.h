@@ -73,6 +73,10 @@ public:
 					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
 					" este " << this->parametriIntrare[6] << endl;
 			}
+			else {
+				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+					this->parametriIntrare[3] <<  endl;
+			}
 		}
 		else if (nrCol > 1) {
 			if (existaWhere) {
@@ -83,6 +87,15 @@ public:
 				}
 				cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3] <<
 					" este " << this->parametriIntrare[k + 4] << endl;
+			}
+			else {
+				cout << "Se vor selecta coloanele ";
+				int k = 1;
+				for (k = 1; k <= nrCol; k++) {
+					cout << this->parametriIntrare[k] << ", ";
+				}
+				cout << "din tabela " << this->parametriIntrare[k + 1] << endl;
+
 			}
 		}
 		else {
