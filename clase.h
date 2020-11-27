@@ -109,28 +109,40 @@ public:
 
 class Create {
 
+public:
+	friend class Interpretor;
 };
 
 class Update {
 
+public:
+	friend class Interpretor;
 };
 
 class Insert {
 
+public:
+	friend class Interpretor;
 };
 
 class Delete {
 
+public:
+	friend class Interpretor;
 };
 
 
 
 class Drop {
 
+public:
+	friend class Interpretor;
 };
 
 class Display {
 
+public:
+	friend class Interpretor;
 };
 
 class Tabela {
