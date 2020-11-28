@@ -244,7 +244,7 @@ private:
 	string* tipuri = nullptr;
 	string* dimensiuni = nullptr;
 	string* valori_implicite = nullptr;
-	int nrPerechiParametri;
+	int nrPerechiParametri = 0;
 	string comandaInitiala = "";
 
 public:
@@ -261,24 +261,15 @@ public:
 		else {
 			int index = 13;
 			int nrSpatii = 0;
-			bool corectTabela = false;
+			
 			//trebuie sa verific daca este doar un parametru inainte de (( 
-			for ( index = 13; this->comandaInitiala[index] != '('; index++) {  //i=12 e pe spatiul dinaintea numelui tabelei
-				//numar spatiile, daca sunt 0 e bine, daca e 1 e bine daca dupa el e (, altfel e gresit ptc sunt introdusi prea multi parametri
-				if (this->comandaInitiala[index] == ' ') {
-					nrSpatii++;
-				}
-			}
-			if (nrSpatii == 0) {
-				corectTabela = true;
-			}
-			else if (nrSpatii == 1 && this->comandaInitiala[index - 1] == ' ') {
-				corectTabela = true;
-
-			}
-
-			if (!corectTabela) {
+			
+			if (strcmp(this->parametriIntrare[4], "integer") != 0 || strcmp(this->parametriIntrare[4], "float") != 0 || strcmp(this->parametriIntrare[4], "text") != 0){
 				throw ExceptieComandaGresita("Eroare");
+			}
+			int nrCaracteristi = this->nrParametriIntrare - 3;
+				if (nrCaracteristi % 4 != 0) {
+					throw ExceptieComandaGresita("Eroare");
 			}
 
 			//numar perechile de cacaturi
@@ -286,11 +277,11 @@ public:
 			int pereche = 0; //la pereche = 4 se face o pereche de parametri
 			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
 				pereche++;
-				if (pereche ==4) {
+				if (pereche == 4) {
 					pereche = 0;
 					this->valori_implicite[this->nrPerechiParametri] = this->parametriIntrare[ind];
 					this->nrPerechiParametri++;
-					
+
 				}
 				else if (pereche == 3) {
 					this->dimensiuni[this->nrPerechiParametri] = this->parametriIntrare[ind];
@@ -301,7 +292,7 @@ public:
 				else if (pereche == 1) {
 					this->numeColoane[this->nrPerechiParametri] = this->parametriIntrare[ind];
 				}
-				
+
 			}
 
 		}
@@ -399,13 +390,17 @@ class Insert {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
+	int nrParametriInserare;
+	string comandaInitiala = "";
 
 public:
 
-	Insert(char** parametriIntrare, int nrParam) {
+	Insert(char** parametriIntrare, int nrParam, string comandaInitiala) {
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
+		this->comandaInitiala = comandaInitiala;
 	}
+
 
 	void filtrareElemente() {
 
@@ -424,6 +419,7 @@ public:
 					break;
 				}
 			}
+			
 			if (!esteValues) {
 				throw ExceptieComandaGresita("Eroare");
 			}
@@ -432,23 +428,38 @@ public:
 				throw ExceptieComandaGresita("Eroare");
 			}
 
-			int NrRestulParametrilor = this->nrParametriIntrare - 4;
-			if (NrRestulParametrilor == 0) {
+			int nrParametriInsert = this->nrParametriIntrare - 4;
+			if (nrParametriInsert == 0) throw ExceptieComandaGresita("Eroare");
+			this->nrParametriInserare= nrParametriInsert;
+			bool corect = true;
+			int nrVirgule = 0;
+			for (int i = 0; i < this->comandaInitiala.size(); i++) {
+				if (this->comandaInitiala[i] == ',') nrVirgule++;
+			}
+			if (nrParametriInsert == 1 && nrVirgule == 0) corect = true;
+			else if (nrVirgule == nrParametriInsert - 1 && nrParametriInsert > 1) corect = true;
+			else corect = false;
+
+			if (nrParametriInsert == 0 || !corect) {
 				throw ExceptieComandaGresita("Eroare");
 			}
 			else {
 				cout << "Tabela: " << parametriIntrare[2] << endl;
-				cout << "Coloane:  " << NrRestulParametrilor << endl;
-				for (int i = 0; i < NrRestulParametrilor; i++)
+				cout << "Coloane:  " << nrParametriInsert << endl;
+				for (int i = 0; i < nrParametriInsert; i++)
 					cout << "Coloana " << i + 1 << " value: " << parametriIntrare[i + 4] << endl;
 			}
 
 		}
 	}
 
+	bool existaParametri() {
+		if (this->nrParametriIntrare > 0) return true;
+		else return false;
+	}
+
 	friend class Interpretor;
-	friend class VerificareFormat;
-	friend class Stiva;
+	
 };
 
 class Delete {
@@ -595,7 +606,7 @@ public:
 		bool temp = false;
 		int nrCuvinte = 0;
 		for (int j = 0; j < comandaIntreaga.size(); j++) {
-			if (comandaIntreaga[j] == ' ' || comandaIntreaga[j] == '(' || comandaIntreaga[j] == '=')
+			if (comandaIntreaga[j] == ' ' || comandaIntreaga[j] == '(' || comandaIntreaga[j] == '=' || comandaIntreaga[j] == ',')
 				temp = false;
 			else if (!temp) {
 				temp = true;
@@ -660,8 +671,18 @@ public:
 			u.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
-			Insert i(this->parametriComanda, this->nrParametri);
-			i.filtrareElemente();
+			Insert i(this->parametriComanda, this->nrParametri, this->comandaInitiala);
+			VerificareFormatParanteze verif(this->comandaInitiala);
+			if (verif.isBalanced()) {
+				if (verif.existaParanteze()) {
+					i.filtrareElemente();
+					if (!i.existaParametri()) {
+						this->nrParametri -= 1;
+					}
+				}
+				else cout << "Eroare";
+			}
+			else cout << "Eroare";
 		}
 		else if (strcmp(this->numeComanda, "DELETE") == 0) {
 			Delete del(this->parametriComanda, this->nrParametri);
@@ -692,11 +713,10 @@ public:
 	friend class generareObiecte;
 	friend class Select;
 
-	// ca sa facem conexiunea folosim si noi un operator
 	friend ostream& operator<<(ostream& consola, Interpretor& inte) {
-		//consola << inte.nrParametri;
+		
 		inte.initializareComenzi();
-		//consola << "Buna ziua";
+	
 		return consola;
 	}
 };
