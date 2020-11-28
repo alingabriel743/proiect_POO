@@ -8,7 +8,7 @@ class Stiva {
 	char top;
 	string comanda;
 public:
-	char a[1000]=""; 
+	char a[1000] = "";
 
 	Stiva() { top = -1; }
 	Stiva(string comanda) {
@@ -19,7 +19,7 @@ public:
 			cout << "Stack Overflow";
 		}
 		else a[++top] = x;
-		
+
 	}
 	void pop() {
 		if (top < 0) {
@@ -37,7 +37,7 @@ public:
 			char x = a[top];
 		}
 	}
-	bool isEmpty(){
+	bool isEmpty() {
 		return (top < 0);
 	}
 
@@ -74,7 +74,7 @@ public:
 			else if (this->comanda[i] == ')')
 				if (st.isEmpty() || !ArePair(st.a[st.top], this->comanda[i])) return false;
 				else st.pop();
-			}
+		}
 		return st.isEmpty() ? true : false;
 	}
 
@@ -112,7 +112,12 @@ public:
 		this->nrParametriIntrare = nrParam;
 		this->comandaInitiala = comandaInitiala;
 	}
+<<<<<<< HEAD
 	
+=======
+
+
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 	void filtrareElemente() {
 		int index = 0;
 		int contor = 1;
@@ -132,6 +137,7 @@ public:
 			this->numeColoane[nrCol] = new char[strlen(this->parametriIntrare[j]) + 1];
 			strcpy(this->numeColoane[nrCol], this->parametriIntrare[j]);
 		}
+<<<<<<< HEAD
 		this->nrColoane = nrCol;
 		if (this->nrColoane) {
 			if (index + 3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index + 3], "WHERE") != 0))
@@ -171,6 +177,46 @@ public:
 						existaColoana = true;
 						break;
 					}
+=======
+
+		if (index + 3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index + 3], "WHERE") != 0))
+			throw ExceptieComandaGresita("Comanda introdusa este gresita");
+		bool existaWhere = false;
+
+		if (index) {
+			this->numeTabela = new char[strlen(this->parametriIntrare[index + 2])];
+			strcpy(this->numeTabela, this->parametriIntrare[index + 2]);
+		}
+		index += 3;
+		bool existaColoana = false;
+		if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0) {
+			existaWhere = true;
+			for (int i = 0; i < nrCol; i++) {
+				if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
+					existaColoana = true;
+					break;
+				}
+			}
+		}
+		if (nrCol == 1) {
+			if (existaWhere) {
+				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
+					" este " << this->parametriIntrare[6] << endl;
+			}
+			else {
+				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+					this->parametriIntrare[3] << endl;
+			}
+
+		}
+		else if (nrCol > 1) {
+			if (existaWhere) {
+				cout << "Se vor selecta coloanele ";
+				int k = 1;
+				for (k = 1; k <= nrCol; k++) {
+					cout << this->parametriIntrare[k] << ", ";
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 				}
 			}
 
@@ -277,6 +323,7 @@ public:
 
 	void filtrareElemente() {
 
+<<<<<<< HEAD
 		int contor = 1;
 		int index = 0;
 		bool esteSet = true;
@@ -327,8 +374,63 @@ public:
 		}
 
 	}
+=======
+			int contor = 1;
+			int index = 0;
+			bool esteSet = true;
+			while (strcmp(this->parametriIntrare[contor], "SET") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteSet = false;
+					break;
+				}
+			}
+			if (!esteSet) {
+				throw ExceptieComandaGresita();
+			}
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+			}
+
+			bool esteWhere = true;
+			contor = 3;
+			index = 0;
+			while (strcmp(this->parametriIntrare[contor], "WHERE") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteWhere = false;
+					break;
+				}
+			}
+			if (!esteWhere) {
+				throw ExceptieComandaGresita();
+			}
+
+			if (index != 2) {
+				throw ExceptieComandaGresita();
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 6;
+			if (NrRestulParametrilor != 2) {
+				throw ExceptieComandaGresita();
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[1]<<endl;
+				cout << "Coloana: " << parametriIntrare[3] << endl;
+				cout << "Valoare: " << parametriIntrare[4] << endl;
+				cout << "Filtru: " << parametriIntrare[6] << endl;
+				cout << "Vloare filtru: " << parametriIntrare[7] << endl;
+			}
+
+		}
+	
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;	
 };
 
 class Insert {
@@ -346,7 +448,11 @@ public:
 	void filtrareElemente() {
 
 		if (strcmp(this->parametriIntrare[1], "INTO") != 0) {
+<<<<<<< HEAD
 			throw ExceptieComandaGresita("Eroare");
+=======
+			throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 		}
 		else {
 			int contor = 2;
@@ -361,16 +467,28 @@ public:
 				}
 			}
 			if (!esteValues) {
+<<<<<<< HEAD
 				throw ExceptieComandaGresita("Eroare");
 			}
 
 			if (index != 1) {
 				throw ExceptieComandaGresita("Eroare");
+=======
+				throw ExceptieComandaGresita();
+			}
+
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 			}
 
 			int NrRestulParametrilor = this->nrParametriIntrare - 4;
 			if (NrRestulParametrilor == 0) {
+<<<<<<< HEAD
 				throw ExceptieComandaGresita("Eroare");
+=======
+				throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 			}
 			else {
 				cout << "Tabela: " << parametriIntrare[2] << endl;
@@ -417,25 +535,42 @@ public:
 				}
 			}
 			if (!esteWhere) {
+<<<<<<< HEAD
 				throw ExceptieComandaGresita("Eroare");
 			}
 			if (index != 1) {
 				throw ExceptieComandaGresita("Eroare");
+=======
+				throw ExceptieComandaGresita();
+			}
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 			}
 
 			int NrRestulParametrilor = this->nrParametriIntrare - 4;
 			if (NrRestulParametrilor != 2) {
+<<<<<<< HEAD
 				throw ExceptieComandaGresita("Eroare");
 			}
 			else {
 				cout << "Tabela: " << parametriIntrare[2] << endl;
 				cout << "Coloana filtru: " << parametriIntrare[4] << " cu valoarea " << parametriIntrare[5];
+=======
+				throw ExceptieComandaGresita();
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[2] << endl;
+				cout << "Coloana filtru " << parametriIntrare[4] << " cu valoarea " << parametriIntrare[5];
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 			}
 
 		}
 	}
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Drop {
@@ -452,10 +587,17 @@ public:
 	void filtrareElemente() {
 
 		if (nrParametriIntrare != 3) {
+<<<<<<< HEAD
 			throw ExceptieComandaGresita("Eroare");
 		}
 		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
 			throw ExceptieComandaGresita("Eroare");
+=======
+			throw ExceptieComandaGresita();
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 		}
 		else {
 			cout << "Se va sterge tabela: " << parametriIntrare[2];
@@ -463,6 +605,8 @@ public:
 	}
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Display {
@@ -479,10 +623,17 @@ public:
 	void filtrareElemente() {
 
 		if (nrParametriIntrare != 3) {
+<<<<<<< HEAD
 			throw ExceptieComandaGresita("Eroare");
 		}
 		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
 			throw ExceptieComandaGresita("Eroare");
+=======
+			throw ExceptieComandaGresita();
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 		}
 		else {
 			cout << "Se va afisa tabela: " << parametriIntrare[2];
@@ -580,8 +731,13 @@ public:
 			// Create c();
 		}
 		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
+<<<<<<< HEAD
 			Update u(this->parametriComanda, this->nrParametri);
 			u.filtrareElemente();
+=======
+			 Update u(this->parametriComanda, this->nrParametri);
+			 u.filtrareElemente();
+>>>>>>> 8e5551346dd91841be9bedf276de18ff8400bcca
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
 			Insert i(this->parametriComanda, this->nrParametri);
