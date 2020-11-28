@@ -294,7 +294,50 @@ private:
 
 public:
 
+	Delete(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (strcmp(this->parametriIntrare[1], "FROM") != 0) {
+			throw ExceptieComandaGresita();
+		}
+		else {
+			int contor = 2;
+			int index = 0;
+			bool esteWhere = true;
+			while (strcmp(this->parametriIntrare[contor], "WHERE") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteWhere = false;
+					break;
+				}
+			}
+			if (!esteWhere) {
+				throw ExceptieComandaGresita();
+			}
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 4;
+			if (NrRestulParametrilor != 2) {
+				throw ExceptieComandaGresita();
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[2] << endl;
+				cout << "Coloana filtru " << parametriIntrare[4] << " cu valoarea " << parametriIntrare[5];
+			}
+
+		}
+	}
+
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 
@@ -443,7 +486,8 @@ public:
 			i.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DELETE") == 0) {
-			//Delete del();
+			Delete del(this->parametriComanda, this->nrParametri);
+			del.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DROP") == 0) {
 			Drop dr(this->parametriComanda, this->nrParametri);
