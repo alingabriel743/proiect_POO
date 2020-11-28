@@ -228,7 +228,68 @@ private:
 
 public:
 
+	Update(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+			int contor = 1;
+			int index = 0;
+			bool esteSet = true;
+			while (strcmp(this->parametriIntrare[contor], "SET") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteSet = false;
+					break;
+				}
+			}
+			if (!esteSet) {
+				throw ExceptieComandaGresita();
+			}
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+			}
+
+			bool esteWhere = true;
+			contor = 3;
+			index = 0;
+			while (strcmp(this->parametriIntrare[contor], "WHERE") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteWhere = false;
+					break;
+				}
+			}
+			if (!esteWhere) {
+				throw ExceptieComandaGresita();
+			}
+
+			if (index != 2) {
+				throw ExceptieComandaGresita();
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 6;
+			if (NrRestulParametrilor != 2) {
+				throw ExceptieComandaGresita();
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[1]<<endl;
+				cout << "Coloana: " << parametriIntrare[3] << endl;
+				cout << "Valoare: " << parametriIntrare[4] << endl;
+				cout << "Filtru: " << parametriIntrare[6] << endl;
+				cout << "Vloare filtru: " << parametriIntrare[7] << endl;
+			}
+
+		}
+	
+
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;	
 };
 
 class Insert {
@@ -479,7 +540,8 @@ public:
 			// Create c();
 		}
 		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
-			// Update u();
+			 Update u(this->parametriComanda, this->nrParametri);
+			 u.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
 			Insert i(this->parametriComanda, this->nrParametri);
