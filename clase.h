@@ -8,7 +8,7 @@ class Stiva {
 	char top;
 	string comanda;
 public:
-	char a[1000]=""; 
+	char a[1000] = "";
 
 	Stiva() { top = -1; }
 	Stiva(string comanda) {
@@ -19,7 +19,7 @@ public:
 			cout << "Stack Overflow";
 		}
 		else a[++top] = x;
-		
+
 	}
 	void pop() {
 		if (top < 0) {
@@ -37,7 +37,7 @@ public:
 			char x = a[top];
 		}
 	}
-	bool isEmpty(){
+	bool isEmpty() {
 		return (top < 0);
 	}
 
@@ -74,7 +74,7 @@ public:
 			else if (this->comanda[i] == ')')
 				if (st.isEmpty() || !ArePair(st.a[st.top], this->comanda[i])) return false;
 				else st.pop();
-			}
+		}
 		return st.isEmpty() ? true : false;
 	}
 
@@ -112,7 +112,7 @@ public:
 		this->nrParametriIntrare = nrParam;
 		this->comandaInitiala = comandaInitiala;
 	}
-	
+
 	void filtrareElemente() {
 		int index = 0;
 		int contor = 1;
@@ -186,8 +186,8 @@ public:
 				else if (!esteEgal && nrParametriWhere == 0) cout << "Se vor afisa toate coloanele din tabela " << this->numeTabela;
 				else cout << "Eroare";
 			}
-			
-			else if (nrCol == 1 && corect ) {
+
+			else if (nrCol == 1 && corect) {
 				if (existaWhere && esteEgal && nrCorectParametriWhere) {
 					cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
 						this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
@@ -209,7 +209,7 @@ public:
 					cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3] <<
 						" este " << this->parametriIntrare[k + 4] << endl;
 				}
-				else if(corect) {
+				else if (corect) {
 					cout << "Se vor selecta coloanele ";
 					int k = 1;
 					for (k = 1; k <= nrCol; k++) {
@@ -244,11 +244,46 @@ private:
 	string* tipuri = nullptr;
 	int* dimensiuni = nullptr;
 	string* valori_implicite = nullptr;
+	int nrPerechiParametri;
+	string comandaInitiala = "";
 
 public:
-	Create(char** parametriIntrare, int nrParametri) {
+	Create(char** parametriIntrare, int nrParam, string comandaInitiala) {
 		this->parametriIntrare = parametriIntrare;
-		this->nrParametriIntrare = nrParametri;
+		this->nrParametriIntrare = nrParam;
+		this->comandaInitiala = comandaInitiala;
+	}
+
+	void filtrareElemente() {
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		else {
+			int index = 13;
+			int nrSpatii = 0;
+			bool corectTabela = false;
+			//trebuie sa verific daca este doar un parametru inainte de (( 
+			for ( index = 13; this->comandaInitiala[index] != '('; index++) {  //i=12 e pe spatiul dinaintea numelui tabelei
+				//numar spatiile, daca sunt 0 e bine, daca e 1 e bine daca dupa el e (, altfel e gresit ptc sunt introdusi prea multi parametri
+				if (this->comandaInitiala[index] == ' ') {
+					nrSpatii++;
+				}
+			}
+			if (nrSpatii == 0) {
+				corectTabela = true;
+			}
+			else if (nrSpatii == 1 && this->comandaInitiala[index - 1] == ' ') {
+				corectTabela = true;
+
+			}
+
+			if (!corectTabela) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+
+
+		}
+
 	}
 	void setNumeColoane() {
 
@@ -260,7 +295,14 @@ public:
 	void generareTabela() {
 		int index = 2;
 	}
+
+	bool existaPerechiParametri() {
+		if (this->nrPerechiParametri > 0) return true;
+		else return false;
+	}
+
 	friend class Interpretor;
+
 };
 
 class Update {
@@ -575,9 +617,21 @@ public:
 			}
 			else cout << "Eroare";
 		}
-		
+
 		else if (strcmp(this->numeComanda, "CREATE") == 0) {
-			// Create c();
+			VerificareFormatParanteze verif(this->comandaInitiala);
+			if (verif.existaParanteze()) {
+				if (verif.isBalanced()) {
+					Create c(this->parametriComanda, this->nrParametri, this->comandaInitiala);
+					c.filtrareElemente();
+					if (!c.existaPerechiParametri()) {
+						cout << "Missing columns";
+						this->nrParametri -= 1;
+					}
+				}
+				else cout << "Eroare";
+			}
+			else cout << "Eroare";
 		}
 		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
 			Update u(this->parametriComanda, this->nrParametri);
@@ -607,8 +661,8 @@ public:
 
 
 	~Interpretor() {
-		 for(int i = 0; i < this->nrParametri; i++){
-			if(this->parametriComanda[i]) delete[] this->parametriComanda[i];
+		for (int i = 0; i < this->nrParametri; i++) {
+			if (this->parametriComanda[i]) delete[] this->parametriComanda[i];
 		}
 		delete[] this->parametriComanda;
 	}
