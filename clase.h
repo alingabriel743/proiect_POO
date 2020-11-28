@@ -8,7 +8,7 @@ class Stiva {
 	char top;
 	string comanda;
 public:
-	char a[1000]=""; 
+	char a[1000] = "";
 
 	Stiva() { top = -1; }
 	Stiva(string comanda) {
@@ -19,7 +19,7 @@ public:
 			cout << "Stack Overflow";
 		}
 		else a[++top] = x;
-		
+
 	}
 	void pop() {
 		if (top < 0) {
@@ -37,7 +37,7 @@ public:
 			char x = a[top];
 		}
 	}
-	bool isEmpty(){
+	bool isEmpty() {
 		return (top < 0);
 	}
 
@@ -74,7 +74,7 @@ public:
 			else if (this->comanda[i] == ')')
 				if (st.isEmpty() || !ArePair(st.a[st.top], this->comanda[i])) return false;
 				else st.pop();
-			}
+		}
 		return st.isEmpty() ? true : false;
 	}
 	bool existaParanteze() {
@@ -112,7 +112,7 @@ public:
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
 	}
-	
+
 
 	void filtrareElemente() {
 		int index = 0;
@@ -133,8 +133,8 @@ public:
 			this->numeColoane[nrCol] = new char[strlen(this->parametriIntrare[j]) + 1];
 			strcpy(this->numeColoane[nrCol], this->parametriIntrare[j]);
 		}
-        
-		if(index+3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index+3], "WHERE") != 0)) 
+
+		if (index + 3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index + 3], "WHERE") != 0))
 			throw ExceptieComandaGresita("Comanda introdusa este gresita");
 		bool existaWhere = false;
 
@@ -154,16 +154,16 @@ public:
 			}
 		}
 		if (nrCol == 1) {
-			if (existaWhere){
+			if (existaWhere) {
 				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
 					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
 					" este " << this->parametriIntrare[6] << endl;
 			}
-			else{
+			else {
 				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
 					this->parametriIntrare[3] << endl;
 			}
-			
+
 		}
 		else if (nrCol > 1) {
 			if (existaWhere) {
@@ -258,8 +258,27 @@ private:
 	int nrParametriIntrare;
 
 public:
+	Drop(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (nrParametriIntrare != 3) {
+			throw ExceptieComandaGresita();
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita();
+		}
+		else {
+			cout << "Se va sterge tabela: " << parametriIntrare[2];
+		}
+	}
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Display {
@@ -268,8 +287,27 @@ private:
 	int nrParametriIntrare;
 
 public:
+	Display(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (nrParametriIntrare != 3) {
+			throw ExceptieComandaGresita();
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita();
+		}
+		else {
+			cout << "Se va afisa tabela: " << parametriIntrare[2];
+		}
+	}
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Tabela {
@@ -361,10 +399,12 @@ public:
 			//Delete del();
 		}
 		else if (strcmp(this->numeComanda, "DROP") == 0) {
-			//Drop dr();
+			Drop dr(this->parametriComanda, this->nrParametri);
+			dr.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DISPLAY") == 0) {
-			//Display dis();
+			Display dis(this->parametriComanda, this->nrParametri);
+			dis.filtrareElemente();
 		}
 		else {
 			throw ExceptieComandaGresita("Missing keyword");
