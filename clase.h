@@ -238,7 +238,53 @@ private:
 
 public:
 
+	Insert(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (strcmp(this->parametriIntrare[1], "INTO") != 0) {
+			throw ExceptieComandaGresita();
+		}
+		else {
+			int contor = 2;
+			int index = 0;
+			bool esteValues = true;
+			while (strcmp(this->parametriIntrare[contor], "VALUES") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteValues = false;
+					break;
+				}
+			}
+			if (!esteValues) {
+				throw ExceptieComandaGresita();
+			}
+
+			if (index != 1) {
+				throw ExceptieComandaGresita();
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 4;
+			if (NrRestulParametrilor == 0) {
+				throw ExceptieComandaGresita();
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[2] << endl;
+				cout << "Coloane:  " << NrRestulParametrilor << endl;
+				for (int i = 0; i < NrRestulParametrilor; i++)
+					cout << "Coloana " << i + 1 << " value: " << parametriIntrare[i + 4] << endl;
+			}
+
+		}
+	}
+
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Delete {
@@ -393,7 +439,8 @@ public:
 			// Update u();
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
-			//Insert i();
+			Insert i(this->parametriComanda, this->nrParametri);
+			i.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DELETE") == 0) {
 			//Delete del();
