@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-
+//introducem Stiva in fisier nou
 class Stiva {
 	char top;
 	string comanda;
@@ -77,6 +77,7 @@ public:
 			}
 		return st.isEmpty() ? true : false;
 	}
+
 	bool existaParanteze() {
 		for (int i = 0; i < this->comanda.size(); i++) {
 			if (this->comanda[i] == '(' || this->comanda[i] == ')') {
@@ -92,11 +93,7 @@ public:
 		}
 		return false;
 	}
-
-
 };
-
-
 
 class Select {
 private:
@@ -106,14 +103,16 @@ private:
 	char* numeTabela = nullptr;
 	char* numeColoanaVerificata = nullptr;
 	char* valoare = nullptr; //atoi
-public:
+	int nrColoane = 0;
+	string comandaInitiala = "";
 
-	Select(char** parametriIntrare, int nrParam) {
+public:
+	Select(char** parametriIntrare, int nrParam, string comandaInitiala) {
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
+		this->comandaInitiala = comandaInitiala;
 	}
 	
-
 	void filtrareElemente() {
 		int index = 0;
 		int contor = 1;
@@ -126,69 +125,112 @@ public:
 				break;
 			}
 		}
-		if (!esteFrom) throw ExceptieComandaGresita("Comanda introdusa este gresita");
+		if (!esteFrom) throw ExceptieComandaGresita("Lipseste FROM");
 		this->numeColoane = new char* [index];
 		int nrCol = 0;
 		for (int j = 1; nrCol < index; nrCol++, j++) {
 			this->numeColoane[nrCol] = new char[strlen(this->parametriIntrare[j]) + 1];
 			strcpy(this->numeColoane[nrCol], this->parametriIntrare[j]);
 		}
-        
-		if(index+3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index+3], "WHERE") != 0)) 
-			throw ExceptieComandaGresita("Comanda introdusa este gresita");
-		bool existaWhere = false;
+		this->nrColoane = nrCol;
+		if (this->nrColoane) {
+			if (index + 3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index + 3], "WHERE") != 0))
+				throw ExceptieComandaGresita("Lipseste WHERE");
 
-		if (index) {
-			this->numeTabela = new char[strlen(this->parametriIntrare[index + 2])];
-			strcpy(this->numeTabela, this->parametriIntrare[index + 2]);
-		}
-		index += 3;
-		bool existaColoana = false;
-		if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0) {
-			existaWhere = true;
-			for (int i = 0; i < nrCol; i++) {
-				if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
-					existaColoana = true;
-					break;
+
+			bool corect = true;
+			int nrVirgule = 0;
+			for (int i = 0; i < this->comandaInitiala.size(); i++) {
+				if (this->comandaInitiala[i] == ',') nrVirgule++;
+			}
+
+			if (nrColoane == 1 && nrVirgule == 0) corect = true;
+			else if (nrVirgule == this->nrColoane - 1 && nrColoane > 1) corect = true;
+			else corect = false;
+
+			bool esteEgal = false;
+			int nrEgal = 0;
+			for (int i = 0; i < this->comandaInitiala.size(); i++) {
+				if (this->comandaInitiala[i] == '=') nrEgal++;
+			}
+			if (nrEgal == 1) esteEgal = true;
+
+			bool existaWhere = false;
+			if (index) {
+				this->numeTabela = new char[strlen(this->parametriIntrare[index + 2])];
+				strcpy(this->numeTabela, this->parametriIntrare[index + 2]);
+			}
+			index += 3;
+
+
+			bool existaColoana = false;
+			if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0 && strcmp(this->numeColoane[0], "ALL") != 0) {
+				existaWhere = true;
+				for (int i = 0; i < nrCol; i++) {
+					if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
+						existaColoana = true;
+						break;
+					}
 				}
 			}
-		}
-		if (nrCol == 1) {
-			if (existaWhere){
-				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
-					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
-					" este " << this->parametriIntrare[6] << endl;
-			}
-			else{
-				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
-					this->parametriIntrare[3] << endl;
+
+			int nrParametriWhere = 0;
+			bool nrCorectParametriWhere = true;
+			for (int i = index + 1; i < this->nrParametriIntrare; i++) nrParametriWhere++;
+			if (nrParametriWhere != 2) nrCorectParametriWhere = false;
+
+			if (strcmp(this->numeColoane[0], "ALL") == 0 && this->nrColoane == 1) {
+				if (esteEgal && nrCorectParametriWhere) {
+					cout << "Se vor afisa toate coloanele din tabela " << this->numeTabela << " unde " << this->parametriIntrare[5] << " are valoarea " << this->parametriIntrare[6];
+				}
+				else if (!esteEgal && nrParametriWhere == 0) cout << "Se vor afisa toate coloanele din tabela " << this->numeTabela;
+				else cout << "Eroare";
 			}
 			
-		}
-		else if (nrCol > 1) {
-			if (existaWhere) {
-				cout << "Se vor selecta coloanele ";
-				int k = 1;
-				for (k = 1; k <= nrCol; k++) {
-					cout << this->parametriIntrare[k] << ", ";
+			else if (nrCol == 1 && corect ) {
+				if (existaWhere && esteEgal && nrCorectParametriWhere) {
+					cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+						this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
+						" este " << this->parametriIntrare[6] << endl;
 				}
-				cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3] <<
-					" este " << this->parametriIntrare[k + 4] << endl;
-			}
-			else {
-				cout << "Se vor selecta coloanele ";
-				int k = 1;
-				for (k = 1; k <= nrCol; k++) {
-					cout << this->parametriIntrare[k] << ", ";
+				else {
+					cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
+						this->parametriIntrare[3] << endl;
 				}
-				cout << "din tabela " << this->parametriIntrare[k + 1] << endl;
 
 			}
-		}
-		else {
-			throw ExceptieComandaGresita();
+			else if (nrCol > 1 && corect) {
+				if (existaWhere && esteEgal && nrCorectParametriWhere) {
+					cout << "Se vor selecta coloanele ";
+					int k = 1;
+					for (k = 1; k <= nrCol; k++) {
+						cout << this->parametriIntrare[k] << ", ";
+					}
+					cout << "din tabela " << this->parametriIntrare[k + 1] << " unde valoarea coloanei " << this->parametriIntrare[k + 3] <<
+						" este " << this->parametriIntrare[k + 4] << endl;
+				}
+				else if(corect) {
+					cout << "Se vor selecta coloanele ";
+					int k = 1;
+					for (k = 1; k <= nrCol; k++) {
+						cout << this->parametriIntrare[k] << ", ";
+					}
+					cout << "din tabela " << this->parametriIntrare[k + 1] << endl;
+				}
+			}
+			else {
+				cout << "Eroare";
+			}
 		}
 	}
+
+	bool existaColoane() {
+		if (this->nrColoane > 0) return true;
+		else return false;
+	}
+
+
+
 	friend class Interpretor;
 	friend class VerificareFormat;
 	friend class Stiva;
@@ -228,6 +270,64 @@ private:
 
 public:
 
+	Update(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		int contor = 1;
+		int index = 0;
+		bool esteSet = true;
+		while (strcmp(this->parametriIntrare[contor], "SET") != 0) {
+			index++;
+			contor++;
+			if (contor >= this->nrParametriIntrare) {
+				esteSet = false;
+				break;
+			}
+		}
+		if (!esteSet) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		if (index != 1) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+
+		bool esteWhere = true;
+		contor = 3;
+		index = 0;
+		while (strcmp(this->parametriIntrare[contor], "WHERE") != 0) {
+			index++;
+			contor++;
+			if (contor >= this->nrParametriIntrare) {
+				esteWhere = false;
+				break;
+			}
+		}
+		if (!esteWhere) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+
+		if (index != 2) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+
+		int NrRestulParametrilor = this->nrParametriIntrare - 6;
+		if (NrRestulParametrilor != 2) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		else {
+			cout << "Tabela: " << parametriIntrare[1] << endl;
+			cout << "Coloana: " << parametriIntrare[3] << endl;
+			cout << "Valoare: " << parametriIntrare[4] << endl;
+			cout << "Filtru: " << parametriIntrare[6] << endl;
+			cout << "Vloare filtru: " << parametriIntrare[7] << endl;
+		}
+
+	}
+
 	friend class Interpretor;
 };
 
@@ -238,7 +338,53 @@ private:
 
 public:
 
+	Insert(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (strcmp(this->parametriIntrare[1], "INTO") != 0) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		else {
+			int contor = 2;
+			int index = 0;
+			bool esteValues = true;
+			while (strcmp(this->parametriIntrare[contor], "VALUES") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteValues = false;
+					break;
+				}
+			}
+			if (!esteValues) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+
+			if (index != 1) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 4;
+			if (NrRestulParametrilor == 0) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[2] << endl;
+				cout << "Coloane:  " << NrRestulParametrilor << endl;
+				for (int i = 0; i < NrRestulParametrilor; i++)
+					cout << "Coloana " << i + 1 << " value: " << parametriIntrare[i + 4] << endl;
+			}
+
+		}
+	}
+
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Delete {
@@ -248,9 +394,49 @@ private:
 
 public:
 
+	Delete(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (strcmp(this->parametriIntrare[1], "FROM") != 0) {
+			throw ExceptieComandaGresita();
+		}
+		else {
+			int contor = 2;
+			int index = 0;
+			bool esteWhere = true;
+			while (strcmp(this->parametriIntrare[contor], "WHERE") != 0) {
+				index++;
+				contor++;
+				if (contor >= this->nrParametriIntrare) {
+					esteWhere = false;
+					break;
+				}
+			}
+			if (!esteWhere) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+			if (index != 1) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+
+			int NrRestulParametrilor = this->nrParametriIntrare - 4;
+			if (NrRestulParametrilor != 2) {
+				throw ExceptieComandaGresita("Eroare");
+			}
+			else {
+				cout << "Tabela: " << parametriIntrare[2] << endl;
+				cout << "Coloana filtru: " << parametriIntrare[4] << " cu valoarea " << parametriIntrare[5];
+			}
+
+		}
+	}
+
 	friend class Interpretor;
 };
-
 
 class Drop {
 private:
@@ -258,6 +444,23 @@ private:
 	int nrParametriIntrare;
 
 public:
+	Drop(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (nrParametriIntrare != 3) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		else {
+			cout << "Se va sterge tabela: " << parametriIntrare[2];
+		}
+	}
 
 	friend class Interpretor;
 };
@@ -268,8 +471,27 @@ private:
 	int nrParametriIntrare;
 
 public:
+	Display(char** parametriIntrare, int nrParam) {
+		this->parametriIntrare = parametriIntrare;
+		this->nrParametriIntrare = nrParam;
+	}
+
+	void filtrareElemente() {
+
+		if (nrParametriIntrare != 3) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+			throw ExceptieComandaGresita("Eroare");
+		}
+		else {
+			cout << "Se va afisa tabela: " << parametriIntrare[2];
+		}
+	}
 
 	friend class Interpretor;
+	friend class VerificareFormat;
+	friend class Stiva;
 };
 
 class Tabela {
@@ -291,8 +513,6 @@ private:
 	static unsigned int nrColoane;
 };
 unsigned int Coloana::nrColoane = 0;
-
-
 
 class Interpretor {
 private:
@@ -323,8 +543,8 @@ public:
 		char* input = new char[this->dimensiuneComanda + 1];
 		strcpy(input, comandaIntreaga.c_str());
 		char delim[] = " =,()";
-		char* numec = strtok(input, delim);
 
+		char* numec = strtok(input, delim);
 		int i = 0;
 		while (numec) {
 			this->parametriComanda[i] = new char[strlen(numec) + 1];
@@ -340,40 +560,55 @@ public:
 			VerificareFormatParanteze verif(this->comandaInitiala);
 			if (verif.existaParanteze()) {
 				if (verif.isBalanced()) {
-					Select s(this->parametriComanda, this->nrParametri);
+					Select s(this->parametriComanda, this->nrParametri, this->comandaInitiala);
 					s.filtrareElemente();
+					if (!s.existaColoane()) {
+						cout << "Missing columns";
+						this->nrParametri -= 1;
+					}
 				}
-				else cout << "Parantezele nu sunt corespunzatoare";
+				else cout << "Eroare";
 			}
-			else cout << "Nu exista paranteze";
-
+			else if (strcmp(this->parametriComanda[1], "ALL") == 0) {
+				Select s(this->parametriComanda, this->nrParametri, this->comandaInitiala);
+				s.filtrareElemente();
+			}
+			else cout << "Eroare";
 		}
+		
 		else if (strcmp(this->numeComanda, "CREATE") == 0) {
 			// Create c();
 		}
 		else if (strcmp(this->numeComanda, "UPDATE") == 0) {
-			// Update u();
+			Update u(this->parametriComanda, this->nrParametri);
+			u.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "INSERT") == 0) {
-			//Insert i();
+			Insert i(this->parametriComanda, this->nrParametri);
+			i.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DELETE") == 0) {
-			//Delete del();
+			Delete del(this->parametriComanda, this->nrParametri);
+			del.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DROP") == 0) {
-			//Drop dr();
+			Drop dr(this->parametriComanda, this->nrParametri);
+			dr.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "DISPLAY") == 0) {
-			//Display dis();
+			Display dis(this->parametriComanda, this->nrParametri);
+			dis.filtrareElemente();
 		}
 		else {
 			throw ExceptieComandaGresita("Missing keyword");
 		}
 	}
 
+
+
 	~Interpretor() {
-		for (int i = 0; i < this->nrParametri; i++) {
-			delete[] this->parametriComanda[i];
+		 for(int i = 0; i < this->nrParametri; i++){
+			if(this->parametriComanda[i]) delete[] this->parametriComanda[i];
 		}
 		delete[] this->parametriComanda;
 	}
