@@ -133,12 +133,9 @@ public:
 			this->numeColoane[nrCol] = new char[strlen(this->parametriIntrare[j]) + 1];
 			strcpy(this->numeColoane[nrCol], this->parametriIntrare[j]);
 		}
-<<<<<<< HEAD
         
 		if(index+3 < this->nrParametriIntrare && (strcmp(this->parametriIntrare[index+3], "WHERE") != 0)) 
 			throw ExceptieComandaGresita("Comanda introdusa este gresita");
-=======
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 		bool existaWhere = false;
 
 		if (index) {
@@ -147,11 +144,7 @@ public:
 		}
 		index += 3;
 		bool existaColoana = false;
-<<<<<<< HEAD
 		if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0) {
-=======
-		if (index < this->nrParametriIntrare) {
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 			existaWhere = true;
 			for (int i = 0; i < nrCol; i++) {
 				if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
@@ -161,27 +154,16 @@ public:
 			}
 		}
 		if (nrCol == 1) {
-<<<<<<< HEAD
 			if (existaWhere){
-=======
-			if (existaWhere) {
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
 					this->parametriIntrare[3] << " unde valoarea coloanei " << this->parametriIntrare[1] <<
 					" este " << this->parametriIntrare[6] << endl;
 			}
-<<<<<<< HEAD
 			else{
 				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
 					this->parametriIntrare[3] << endl;
 			}
 			
-=======
-			else {
-				cout << "Se va selecta coloana " << this->parametriIntrare[1] << " din tabela " <<
-					this->parametriIntrare[3] <<  endl;
-			}
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 		}
 		else if (nrCol > 1) {
 			if (existaWhere) {
@@ -200,17 +182,6 @@ public:
 					cout << this->parametriIntrare[k] << ", ";
 				}
 				cout << "din tabela " << this->parametriIntrare[k + 1] << endl;
-<<<<<<< HEAD
-=======
-
-			}
-		}
-		else {
-			throw ExceptieComandaGresita();
-		}
-
-	}
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 
 			}
 		}
@@ -227,7 +198,6 @@ class Create {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
-<<<<<<< HEAD
 	char** numeColoane = nullptr;
 	string* tipuri = nullptr;
 	int* dimensiuni = nullptr;
@@ -248,11 +218,6 @@ public:
 	void generareTabela() {
 		int index = 2;
 	}
-=======
-
-public:
-
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 	friend class Interpretor;
 };
 
@@ -291,15 +256,9 @@ class Drop {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
-<<<<<<< HEAD
 
 public:
 
-=======
-
-public:
-
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 	friend class Interpretor;
 };
 
@@ -307,15 +266,9 @@ class Display {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
-<<<<<<< HEAD
 
 public:
 
-=======
-
-public:
-
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 	friend class Interpretor;
 };
 
@@ -414,11 +367,7 @@ public:
 			//Display dis();
 		}
 		else {
-<<<<<<< HEAD
 			throw ExceptieComandaGresita("Missing keyword");
-=======
-			throw ExceptieComandaGresita();
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
 		}
 	}
 
@@ -439,9 +388,4 @@ public:
 		//consola << "Buna ziua";
 		return consola;
 	}
-<<<<<<< HEAD
 };
-=======
-
-};
->>>>>>> f975f8ad5fdc90a56b59e0f1939302ceafdcf0f0
