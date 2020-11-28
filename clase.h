@@ -240,9 +240,9 @@ class Create {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
-	char** numeColoane = nullptr;
+	string* numeColoane = nullptr;
 	string* tipuri = nullptr;
-	int* dimensiuni = nullptr;
+	string* dimensiuni = nullptr;
 	string* valori_implicite = nullptr;
 	int nrPerechiParametri;
 	string comandaInitiala = "";
@@ -281,6 +281,28 @@ public:
 				throw ExceptieComandaGresita("Eroare");
 			}
 
+			//numar perechile de cacaturi
+			int ind = 3;  //primul element dupa ((
+			int pereche = 0; //la pereche = 4 se face o pereche de parametri
+			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+				pereche++;
+				if (pereche ==4) {
+					pereche = 0;
+					this->valori_implicite[this->nrPerechiParametri] = this->parametriIntrare[ind];
+					this->nrPerechiParametri++;
+					
+				}
+				else if (pereche == 3) {
+					this->dimensiuni[this->nrPerechiParametri] = this->parametriIntrare[ind];
+				}
+				else if (pereche == 2) {
+					this->tipuri[this->nrPerechiParametri] = this->parametriIntrare[ind];
+				}
+				else if (pereche == 1) {
+					this->numeColoane[this->nrPerechiParametri] = this->parametriIntrare[ind];
+				}
+				
+			}
 
 		}
 
