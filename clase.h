@@ -431,31 +431,8 @@ public:
 		return consola;
 	}
 
-	friend bool operator>=(Update c1, Update c2) {
-		if (c1.parametriIntrare[7] >= c2.parametriIntrare[7])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<=(Update c1, Update c2) {
-		if (c1.parametriIntrare[7] <= c2.parametriIntrare[7])
-			return true;
-		else return false;
-	}
-
 	friend bool operator>(Update c1, Update c2) {
 		if (c1.parametriIntrare[7] > c2.parametriIntrare[7])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<(Update c1, Update c2) {
-		if (c1.parametriIntrare[7] < c2.parametriIntrare[7])
-			return true;
-		else return false;
-	}
-	friend bool operator==(Update c1, Update c2) {
-		if (c1.parametriIntrare[7] == c2.parametriIntrare[7])
 			return true;
 		else return false;
 	}
@@ -595,31 +572,8 @@ public:
 		return consola;
 	}
 
-	friend bool operator>=(Update c1, Update c2) {
-		if (c1.parametriIntrare[5] >= c2.parametriIntrare[5])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<=(Update c1, Update c2) {
-		if (c1.parametriIntrare[5] <= c2.parametriIntrare[5])
-			return true;
-		else return false;
-	}
-
-	friend bool operator>(Update c1, Update c2) {
-		if (c1.parametriIntrare[5] > c2.parametriIntrare[5])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<(Update c1, Update c2) {
-		if (c1.parametriIntrare[5] < c2.parametriIntrare[5])
-			return true;
-		else return false;
-	}
-	friend bool operator==(Update c1, Update c2) {
-		if (c1.parametriIntrare[5] == c2.parametriIntrare[5])
+	friend bool operator<(Delete c1, Delete c2) {
+		if (strcmp(c1.parametriIntrare[5] ,c2.parametriIntrare[5])!=0)
 			return true;
 		else return false;
 	}
@@ -658,31 +612,8 @@ public:
 		return consola;
 	}
 
-	friend bool operator>=(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] >= c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<=(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] <= c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
-	friend bool operator>(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] > c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] < c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-	friend bool operator==(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] == c2.parametriIntrare[2])
+	friend bool operator<(Drop c1, Drop c2) {
+		if (strcmp(c1.parametriIntrare[5], c2.parametriIntrare[5]) != 0)
 			return true;
 		else return false;
 	}
@@ -723,46 +654,101 @@ public:
 		return consola;
 	}
 
-	friend bool operator>=(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] >= c2.parametriIntrare[2])
+	friend bool operator<(Display c1, Display c2) {
+		if (strcmp(c1.parametriIntrare[5], c2.parametriIntrare[5]) != 0)
 			return true;
 		else return false;
 	}
-
-	friend bool operator<=(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] <= c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
-	friend bool operator>(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] > c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
-	friend bool operator<(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] < c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-	friend bool operator==(Update c1, Update c2) {
-		if (c1.parametriIntrare[2] == c2.parametriIntrare[2])
-			return true;
-		else return false;
-	}
-
 };
 
 class Tabela {
 private:
 	const int id;
+	string numeTabela;
 	static int nrTabela;
+	int nrColoane;
 	//vector de tabele pentru a tine minte existenta lor
 public:
-	//ceva
-};
 
+	Tabela(): id(nrTabela) {
+		this->numeTabela = "";
+		this->nrColoane = 0;
+		nrTabela++;
+	}
+
+	Tabela(string nume) : id(nrTabela) {
+		this->numeTabela = nume;
+		nrTabela++;
+	}
+
+	Tabela(string nume, int numar_c) : id(nrTabela) {
+		this->numeTabela = nume;
+		this->nrColoane = numar_c;
+		nrTabela++;
+	}
+
+	Tabela(const Tabela& t) : id(nrTabela) {
+		this->numeTabela = t.numeTabela;
+		this->nrColoane = t.nrColoane;
+	}
+
+	string getNumeTabela() {
+		return this->numeTabela;
+	}
+
+	int getNrColoane() {
+		return this->nrColoane;
+	}														
+		
+	void setNumeTabela(string numeT) {
+		if(numeT!="")
+		this->numeTabela = numeT;
+	}
+
+	void setNrColoane(int nr) {
+		if (nr != 0)
+			this->nrColoane = nr;
+	}
+
+	friend ostream& operator<<(ostream& consola, Tabela& tab) {
+
+		consola << "Nume tabela: " << tab.numeTabela << endl;
+		consola << "Numar tabela: " << tab.nrTabela << endl;
+		consola << "Numar coloane: " << tab.nrColoane << endl;
+
+		return consola;
+	}
+
+	friend istream& operator>>(istream& input, Tabela& tab) {
+
+		cout << "Nume tabela: ";
+		input >> tab.numeTabela;
+		cout << "Numar tabela: ";
+		input >> tab.nrTabela;
+		cout << "Numar coloane: ";
+		input >> tab.nrColoane;
+
+		return input;
+	}
+
+	Tabela operator+(const Tabela& t) {
+		this->nrColoane += t.nrColoane;
+		return *this;
+	}
+
+	void operator=(Tabela& t) {
+		this->numeTabela = t.numeTabela;
+		this->nrTabela = t.nrTabela;
+		this->nrColoane = t.nrColoane;
+	}
+
+	bool operator==(Tabela& t) {
+		if (this->numeTabela == t.numeTabela && this->nrTabela == t.nrTabela && this->nrColoane == t.nrColoane)
+			return true;
+		else return false;
+	}
+};																
+														
 int Tabela::nrTabela = 0;
 
 class Coloana {
@@ -771,6 +757,118 @@ private:
 	string tip;
 	string descriere;
 	static unsigned int nrColoane;
+public:
+	Coloana() {
+		this->nume_coloana = "";
+		this->tip = "";
+		this->descriere = "";
+		nrColoane++;
+	}
+
+	Coloana(string nume_c, string desc){
+		this->nume_coloana = nume_c;
+		this->descriere = desc;
+		nrColoane++;
+	}
+
+	Coloana(string nume_c, string tipul, string desc) :nume_coloana(nume_c),tip(tipul),descriere(desc) {
+		nrColoane++;
+
+	}
+	Coloana(const Coloana& c) {
+		this->nume_coloana = c.nume_coloana;
+		this->descriere = c.descriere;
+		this->tip = c.tip;
+	}
+
+	string getNumeColoana() {
+		return this->nume_coloana;
+	}
+
+	string getTip() {
+		return this->tip;
+	}
+
+	string getDescriere() {
+		return this->descriere;
+	}
+
+	void setNumeColoana(string nume_c) {
+		if (nume_c != "") {
+			this->nume_coloana = nume_c;
+		}
+		
+	}
+
+	void setDescriere(string descr) {
+		if (descr != "") {
+			this->descriere = descr;
+		}
+
+	}
+
+	void setTip(string tipul) {
+		if (tipul != "") {
+			this->tip = tipul;
+		}
+
+	}
+	
+	friend ostream& operator<<(ostream& consola, Coloana& col) {
+
+		consola << "Nume coloana: " << col.nume_coloana << endl;
+		consola << "Tipul: " << col.tip << endl;
+		consola << "Descriere: " << col.descriere << endl;
+		
+		return consola;
+	}
+
+	friend istream& operator>>(istream& input, Coloana& col) {
+		cout << "Nume coloana: ";
+		input >> col.nume_coloana;
+		cout << "Tipul: ";
+		input >> col.tip;
+		cout << "Descriere: ";
+		input >> col.descriere;
+
+		return input;
+
+	}
+
+	void operator=(Coloana& c) {
+		this->nume_coloana = c.nume_coloana;
+		this->tip = c.tip;
+		this->descriere = c.descriere;
+	}
+
+	bool operator!() {
+		if (this->nume_coloana == "") {
+			return true;
+		}
+		else return false;
+	}
+
+	bool operator==(Coloana& c) {
+		if (this->nume_coloana == c.nume_coloana && this->tip == c.tip && this->descriere == c.descriere)
+			return true;
+		else return false;
+
+	}
+	//prefixata
+	Coloana operator--() {
+		this->nume_coloana = "";
+		this->descriere = "";
+		this->tip = "";
+		return *this;
+	}
+	//postfixata
+	Coloana operator--(int) {
+		this->nume_coloana = "";
+		this->descriere = "";
+		this->tip = "";
+		return *this;
+	}
+
 };
 unsigned int Coloana::nrColoane = 0;
 
