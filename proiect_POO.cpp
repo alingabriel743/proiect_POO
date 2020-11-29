@@ -8,8 +8,12 @@ using namespace std;
 int main(int argc, char* argv[]) {
 	string comanda;
 	getline(cin, comanda);
-    //pentru citirea mai multor comenzi folosim un while(exit)
-	Interpretor interp(comanda, comanda.size());
-	//interp.initializareComenzi();
-	cout << interp;
+	try {
+		Interpretor interp(comanda, comanda.size());
+		cout << interp;
+	}
+	catch (ExceptieComandaGresita & ex) {
+		cout << ex.getMesaj() << endl;
+	}
+
 }
