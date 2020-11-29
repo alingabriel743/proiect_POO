@@ -1,4 +1,4 @@
-#pragma once
+~#pragma once
 #pragma warning(disable:4996)
 #include <iostream>
 #include <string>
@@ -161,13 +161,13 @@ public:
 
 			bool existaColoana = false;
 			if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0 && strcmp(this->numeColoane[0], "ALL") != 0) {
-existaWhere = true;
-for (int i = 0; i < nrCol; i++) {
-	if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
-		existaColoana = true;
-		break;
-	}
-}
+				existaWhere = true;
+				for (int i = 0; i < nrCol; i++) {
+					if (strcmp(this->numeColoane[i], this->parametriIntrare[index + 1]) == 0) {
+						existaColoana = true;
+						break;
+					}
+				}
 			}
 
 			int nrParametriWhere = 0;
@@ -235,6 +235,15 @@ for (int i = 0; i < nrCol; i++) {
 
 	friend class Interpretor;
 
+	char* operator[](int index) {
+		if(index >0 && index < this->nrColoane)
+			return this->numeColoane[index];
+	}
+
+	friend ostream& operator<<(ostream& os, Select& s) {
+		s.filtrareElemente();
+		return os;
+	}
 };
 
 class Create {
@@ -261,171 +270,168 @@ public:
 			throw ExceptieComandaGresita("Eroare");
 		}
 		else {
-			if (strcmp(this->parametriIntrare[3], "IF") == 0 && strcmp(this->parametriIntrare[4], "NOT") && strcmp(this->parametriIntrare[5], "EXISTS")){
-			if (strcmp(this->parametriIntrare[7], "integer") != 0 && strcmp(this->parametriIntrare[7], "float") != 0 && strcmp(this->parametriIntrare[7], "text") != 0) {
-				throw ExceptieComandaGresita("Eroare");
-			}
-			int nrCaracteristi = this->nrParametriIntrare - 6;
-			if (nrCaracteristi % 4 != 0) {
-				throw ExceptieComandaGresita("Eroare");
-			}
-
-			int ind = 6;
-			int pereche = 0;
-			for (ind = 6; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					this->nrPerechiParametri++;
+			if (strcmp(this->parametriIntrare[3], "IF") == 0 && strcmp(this->parametriIntrare[4], "NOT") == 0 && strcmp(this->parametriIntrare[5], "EXISTS") == 0) {
+				if (strcmp(this->parametriIntrare[7], "integer") != 0 && strcmp(this->parametriIntrare[7], "float") != 0 && strcmp(this->parametriIntrare[7], "text") != 0) {
+					throw ExceptieComandaGresita("Eroare");
+				}
+				int nrCaracteristi = this->nrParametriIntrare - 6;
+				if (nrCaracteristi % 4 != 0) {
+					throw ExceptieComandaGresita("Eroare");
 				}
 
-			}
-
-			this->valori_implicite = new char* [this->nrPerechiParametri];
-			this->dimensiuni = new char* [this->nrPerechiParametri];
-			this->tipuri = new char* [this->nrPerechiParametri];
-			this->numeColoane = new char* [this->nrPerechiParametri];
-			nrPerechiParametri = 0;
-			for (ind = 6; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
-					nrPerechiParametri++;
-
-				}
-				else if (pereche == 3) {
-					this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
-
-				}
-				else if (pereche == 2) {
-					this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
-
-				}
-				else if (pereche == 1) {
-					this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+				int ind = 6;
+				int pereche = 0;
+				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->nrPerechiParametri++;
+					}
 
 				}
 
-			}
-			cout << "Tabel: " << this->parametriIntrare[2] << endl;
-			pereche = 0;
-			this->nrPerechiParametri = 0;
-			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
-					this->nrPerechiParametri++;
-				}
-				else if (pereche == 3) {
-					cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
-				}
-				else if (pereche == 2) {
-					cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
-				}
-				else if (pereche == 1) {
-					cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
-				}
+				this->valori_implicite = new char* [this->nrPerechiParametri];
+				this->dimensiuni = new char* [this->nrPerechiParametri];
+				this->tipuri = new char* [this->nrPerechiParametri];
+				this->numeColoane = new char* [this->nrPerechiParametri];
+				nrPerechiParametri = 0;
+				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						nrPerechiParametri++;
 
-			}
-			
-		}
-			else if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
-				throw ExceptieComandaGresita("Eroare");
-			}
-			int nrCaracteristi = this->nrParametriIntrare - 3;
-			if (nrCaracteristi % 4 != 0) {
-				throw ExceptieComandaGresita("Eroare");
-			}
+					}
+					else if (pereche == 3) {
+						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-			int ind = 3;
-			int pereche = 0;
-			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					this->nrPerechiParametri++;
-				}
+					}
+					else if (pereche == 2) {
+						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-			}
+					}
+					else if (pereche == 1) {
+						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-			this->valori_implicite = new char* [this->nrPerechiParametri];
-			this->dimensiuni = new char* [this->nrPerechiParametri];
-			this->tipuri = new char* [this->nrPerechiParametri];
-			this->numeColoane = new char* [this->nrPerechiParametri];
-			nrPerechiParametri = 0;
-			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
-					nrPerechiParametri++;
+					}
 
 				}
-				else if (pereche == 3) {
-					this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
-
-				}
-				else if (pereche == 2) {
-					this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
-
-				}
-				else if (pereche == 1) {
-					this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-					strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+				cout << "Tabel: " << this->parametriIntrare[2] << endl;
+				pereche = 0;
+				this->nrPerechiParametri = 0;
+				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+						this->nrPerechiParametri++;
+					}
+					else if (pereche == 3) {
+						cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 2) {
+						cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 1) {
+						cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+					}
 
 				}
 
 			}
-			cout << "Tabel: " << this->parametriIntrare[2] << endl;
-			pereche = 0;
-			this->nrPerechiParametri = 0;
-			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
-					this->nrPerechiParametri++;
+			else {
+				if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
+					throw ExceptieComandaGresita("Eroare");
 				}
-				else if (pereche == 3) {
-					cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
-				}
-				else if (pereche == 2) {
-					cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
-				}
-				else if (pereche == 1) {
-					cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+				int nrCaracteristi = this->nrParametriIntrare - 3;
+				if (nrCaracteristi % 4 != 0) {
+					throw ExceptieComandaGresita("Eroare");
 				}
 
+				int ind = 3;
+				int pereche = 0;
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->nrPerechiParametri++;
+					}
+
+				}
+
+				this->valori_implicite = new char* [this->nrPerechiParametri];
+				this->dimensiuni = new char* [this->nrPerechiParametri];
+				this->tipuri = new char* [this->nrPerechiParametri];
+				this->numeColoane = new char* [this->nrPerechiParametri];
+				nrPerechiParametri = 0;
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						nrPerechiParametri++;
+
+					}
+					else if (pereche == 3) {
+						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
+
+					}
+					else if (pereche == 2) {
+						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
+
+					}
+					else if (pereche == 1) {
+						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+
+					}
+
+				}
+				cout << "Tabel: " << this->parametriIntrare[2] << endl;
+				pereche = 0;
+				this->nrPerechiParametri = 0;
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+						this->nrPerechiParametri++;
+					}
+					else if (pereche == 3) {
+						cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 2) {
+						cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 1) {
+						cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+					}
+				}
 			}
 		}
 
 	}
 
-	void generareTabela() {
-		int index = 2;
-	}
+	
 
 	bool existaPerechiParametri() {
 		if (this->nrPerechiParametri > 0) return true;
 		else return false;
 	}
 
-	~Create() {
-
-
-	}
-
 	friend class Interpretor;
-
+	friend ostream& operator<<(ostream& os, Create& c) {
+		c.filtrareElemente();
+		return os;
+	}
 };
 
 class Update {
@@ -506,7 +512,7 @@ public:
 	}
 
 	friend bool operator>(Update c1, Update c2) {
-		if (c1.parametriIntrare[7] > c2.parametriIntrare[7])
+		if ((int)c1.parametriIntrare[7] > (int)c2.parametriIntrare[7])
 			return true;
 		else return false;
 	}
@@ -517,6 +523,7 @@ private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
 	int nrParametriInserare;
+	char* numeTabela = nullptr;
 	string comandaInitiala = "";
 
 public:
@@ -527,6 +534,9 @@ public:
 		this->comandaInitiala = comandaInitiala;
 	}
 
+	void setNumeTabela() {
+		this->numeTabela = this->parametriIntrare[2];
+	}
 
 	void filtrareElemente() {
 
@@ -584,7 +594,13 @@ public:
 		else return false;
 	}
 
+	~Insert() {
+		if (this->numeTabela) delete[] this->numeTabela;
+	}
+
 	friend class Interpretor;
+
+
 
 };
 
@@ -647,7 +663,7 @@ public:
 	}
 
 	friend bool operator<(Delete c1, Delete c2) {
-		if (strcmp(c1.parametriIntrare[5] ,c2.parametriIntrare[5])!=0)
+		if (strcmp(c1.parametriIntrare[5], c2.parametriIntrare[5]) != 0)
 			return true;
 		else return false;
 	}
@@ -657,6 +673,7 @@ class Drop {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
+	char* numeTabela = nullptr;
 
 public:
 	Drop(char** parametriIntrare, int nrParam) {
@@ -677,6 +694,15 @@ public:
 		}
 	}
 
+	void setNumeTabela() {
+		if (nrParametriIntrare == 3 && (strcmp(this->parametriIntrare[1], "TABLE") == 0)) {
+			this->numeTabela = new char[strlen(this->parametriIntrare[2]) + 1];
+			strcpy(this->numeTabela, this->parametriIntrare[2]);
+		}
+	}
+	~Drop() {
+		if (this->numeTabela) delete[] this->numeTabela;
+	}
 	friend class Interpretor;
 
 	friend ostream& operator<<(ostream& consola, Drop& dr) {
@@ -691,11 +717,16 @@ public:
 			return true;
 		else return false;
 	}
+
+	char* operator[](int index) {
+		return this->parametriIntrare[index];
+	}
 };
 
 class Display {
 private:
 	char** parametriIntrare = nullptr;
+	char* numeTabela = nullptr;
 	int nrParametriIntrare;
 
 public:
@@ -717,9 +748,16 @@ public:
 		}
 	}
 
+	void setNumeTabela() {
+		if (nrParametriIntrare == 3 && (strcmp(this->parametriIntrare[1], "TABLE") == 0)) {
+			this->numeTabela = new char[strlen(this->parametriIntrare[2]) + 1];
+			strcpy(this->numeTabela, this->parametriIntrare[2]);
+		}
+	}
+
 	friend class Interpretor;
 	~Display() {
-
+		delete[] this->numeTabela;
 	}
 	friend ostream& operator<<(ostream& consola, Display& dis) {
 
@@ -733,6 +771,10 @@ public:
 			return true;
 		else return false;
 	}
+
+	char* operator[](int index) {
+		return this->parametriIntrare[index];
+	}
 };
 
 class Tabela {
@@ -741,10 +783,9 @@ private:
 	string numeTabela;
 	static int nrTabela;
 	int nrColoane;
-	//vector de tabele pentru a tine minte existenta lor
 public:
 
-	Tabela(): id(nrTabela) {
+	Tabela() : id(nrTabela) {
 		this->numeTabela = "";
 		this->nrColoane = 0;
 		nrTabela++;
@@ -764,6 +805,7 @@ public:
 	Tabela(const Tabela& t) : id(nrTabela) {
 		this->numeTabela = t.numeTabela;
 		this->nrColoane = t.nrColoane;
+		
 	}
 
 	string getNumeTabela() {
@@ -772,11 +814,11 @@ public:
 
 	int getNrColoane() {
 		return this->nrColoane;
-	}														
-		
+	}
+
 	void setNumeTabela(string numeT) {
-		if(numeT!="")
-		this->numeTabela = numeT;
+		if (numeT != "")
+			this->numeTabela = numeT;
 	}
 
 	void setNrColoane(int nr) {
@@ -821,8 +863,14 @@ public:
 			return true;
 		else return false;
 	}
-};																
-														
+
+	void operator++() {
+		this->nrColoane++;
+	}
+	void operator++(int) {
+		this->nrColoane++;
+	}
+};
 int Tabela::nrTabela = 0;
 
 class Coloana {
@@ -830,24 +878,21 @@ private:
 	string nume_coloana;
 	string tip;
 	string descriere;
-	static unsigned int nrColoane;
 public:
 	Coloana() {
 		this->nume_coloana = "";
 		this->tip = "";
 		this->descriere = "";
-		nrColoane++;
+		
 	}
 
-	Coloana(string nume_c, string desc){
+	Coloana(string nume_c, string desc) {
 		this->nume_coloana = nume_c;
 		this->descriere = desc;
-		nrColoane++;
 	}
 
-	Coloana(string nume_c, string tipul, string desc) :nume_coloana(nume_c),tip(tipul),descriere(desc) {
-		nrColoane++;
-
+	Coloana(string nume_c, string tipul, string desc) :nume_coloana(nume_c), tip(tipul), descriere(desc) {
+		
 	}
 	Coloana(const Coloana& c) {
 		this->nume_coloana = c.nume_coloana;
@@ -871,7 +916,7 @@ public:
 		if (nume_c != "") {
 			this->nume_coloana = nume_c;
 		}
-		
+
 	}
 
 	void setDescriere(string descr) {
@@ -887,13 +932,13 @@ public:
 		}
 
 	}
-	
+
 	friend ostream& operator<<(ostream& consola, Coloana& col) {
 
 		consola << "Nume coloana: " << col.nume_coloana << endl;
 		consola << "Tipul: " << col.tip << endl;
 		consola << "Descriere: " << col.descriere << endl;
-		
+
 		return consola;
 	}
 
@@ -904,9 +949,7 @@ public:
 		input >> col.tip;
 		cout << "Descriere: ";
 		input >> col.descriere;
-
 		return input;
-
 	}
 
 	void operator=(Coloana& c) {
@@ -942,9 +985,60 @@ public:
 		this->tip = "";
 		return *this;
 	}
+	friend class Tabela;
+};
+
+class Users {
+private:
+	const int id;
+	static int nrUsers;
+	int* Modificari = nullptr;
+	string nume;
+	int noEntries;
+	int sectiuniAlocate[15];
+public:
+	Users() : id(nrUsers) {
+		this->noEntries = 0;
+		this->nume = "None";
+		nrUsers++;
+	}
+	Users(string nume, int nrModificari) : id(nrUsers){
+		this->nume = nume;
+		this->noEntries = nrModificari;
+		nrUsers++;
+	}
+	Users(string nume, int* modificariAduse, int noEntries) : id(nrUsers){
+		this->nume = nume;
+		this->noEntries = noEntries;
+		this->Modificari = modificariAduse;
+	}
+
+	Users(const Users& u) : id(nrUsers) {
+		this->nume = u.nume;
+		this->Modificari = new int[u.noEntries];
+		for (int i = 0; i < u.noEntries; i++) Modificari[i] = u.Modificari[i];
+		this->noEntries = u.noEntries;
+	}
+    
+	void setNume(string nume) {
+		this->nume = nume;
+	}
+
+	void setIntrati(int nr) {
+		this->noEntries = nr;
+	}
+
+	~Users() {
+		if (this->Modificari) delete[] this->Modificari;
+	}
+
+	friend istream& operator>>(istream& os, Users& u) {
+		os >> u.nume;
+		os >> u.noEntries;
+		return os;
+	}
 
 };
-unsigned int Coloana::nrColoane = 0;
 
 class Interpretor {
 private:
@@ -953,12 +1047,10 @@ private:
 	char** parametriComanda = nullptr;
 	int nrParametri;
 	string comandaInitiala = "";
-	int nrParametriAjustati = 0;
 public:
 	Interpretor() {
 		this->dimensiuneComanda = 0;
 		this->nrParametri = 0;
-		this->nrParametriAjustati = 0;
 	}
 	Interpretor(string comandaIntreaga, int size) : dimensiuneComanda(size) {
 		this->comandaInitiala = comandaIntreaga;
@@ -986,7 +1078,7 @@ public:
 			numec = strtok(nullptr, delim);
 			if (numec) i++;
 		}
-		this->nrParametriAjustati = i;
+	
 		this->numeComanda = this->parametriComanda[0];
 	}
 
@@ -996,9 +1088,9 @@ public:
 			if (verif.existaParanteze()) {
 				if (verif.isBalanced()) {
 					Select s(this->parametriComanda, this->nrParametri, this->comandaInitiala);
-					s.filtrareElemente();
+					cout << s;
 					if (!s.existaColoane()) {
-						cout << "Missing columns";
+						cout << "Eroare";
 						this->nrParametri -= 1;
 					}
 				}
@@ -1057,7 +1149,7 @@ public:
 			dis.filtrareElemente();
 		}
 		else {
-			throw ExceptieComandaGresita("Missing keyword");
+			throw ExceptieComandaGresita("Eroare");
 		}
 	}
 
@@ -1067,14 +1159,14 @@ public:
 		}
 		delete[] this->parametriComanda;
 	}
-
-	friend class generareObiecte;
 	friend class Select;
-
 	friend ostream& operator<<(ostream& consola, Interpretor& inte) {
-
 		inte.initializareComenzi();
-
 		return consola;
 	}
+
+	char* &operator[](int index) {
+		return this->parametriComanda[index];
+	}
+
 };
