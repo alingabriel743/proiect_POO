@@ -7,9 +7,8 @@ using namespace std;
 class Stiva {
 	char top;
 	string comanda;
-public:
 	char a[1000] = "";
-
+public:
 	Stiva() { top = -1; }
 	Stiva(string comanda) {
 		this->comanda = comanda;
@@ -101,8 +100,6 @@ private:
 	int nrParametriIntrare;
 	char** numeColoane = nullptr;
 	char* numeTabela = nullptr;
-	char* numeColoanaVerificata = nullptr;
-	char* valoare = nullptr; //atoi
 	int nrColoane = 0;
 	string comandaInitiala = "";
 
@@ -161,7 +158,6 @@ public:
 				strcpy(this->numeTabela, this->parametriIntrare[index + 2]);
 			}
 			index += 3;
-
 
 			bool existaColoana = false;
 			if (index < this->nrParametriIntrare && strcmp(this->parametriIntrare[index], "WHERE") == 0 && strcmp(this->numeColoane[0], "ALL") != 0) {
@@ -229,25 +225,31 @@ public:
 		else return false;
 	}
 
-
+	~Select() {
+		for (int i = 0; i < this->nrColoane; i++) {
+			if (this->numeColoane[i]) delete[] this->numeColoane[i];
+		}
+		delete[] this->numeColoane;
+		
+	}
 
 	friend class Interpretor;
-	friend class VerificareFormat;
-	friend class Stiva;
+	
 };
 
 class Create {
 private:
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare;
-	string* numeColoane = nullptr;
-	string* tipuri = nullptr;
-	string* dimensiuni = nullptr;
-	string* valori_implicite = nullptr;
+	char** numeColoane = nullptr;
+	char** tipuri = nullptr;
+	char** dimensiuni = nullptr;
+	char** valori_implicite = nullptr;
 	int nrPerechiParametri = 0;
 	string comandaInitiala = "";
 
 public:
+	
 	Create(char** parametriIntrare, int nrParam, string comandaInitiala) {
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
@@ -259,12 +261,7 @@ public:
 			throw ExceptieComandaGresita("Eroare");
 		}
 		else {
-			int index = 13;
-			int nrSpatii = 0;
-			
-			//trebuie sa verific daca este doar un parametru inainte de (( 
-			
-			if (strcmp(this->parametriIntrare[4], "integer") != 0 || strcmp(this->parametriIntrare[4], "float") != 0 || strcmp(this->parametriIntrare[4], "text") != 0){
+			if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0){
 				throw ExceptieComandaGresita("Eroare");
 			}
 			int nrCaracteristi = this->nrParametriIntrare - 3;
@@ -272,39 +269,73 @@ public:
 					throw ExceptieComandaGresita("Eroare");
 			}
 
-			//numar perechile de cacaturi
-			int ind = 3;  //primul element dupa ((
-			int pereche = 0; //la pereche = 4 se face o pereche de parametri
-			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-				pereche++;
-				if (pereche == 4) {
-					pereche = 0;
-					this->valori_implicite[this->nrPerechiParametri] = this->parametriIntrare[ind];
-					this->nrPerechiParametri++;
+				int ind = 3;  
+				int pereche = 0; 
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->nrPerechiParametri++;
+					}
 
 				}
-				else if (pereche == 3) {
-					this->dimensiuni[this->nrPerechiParametri] = this->parametriIntrare[ind];
-				}
-				else if (pereche == 2) {
-					this->tipuri[this->nrPerechiParametri] = this->parametriIntrare[ind];
-				}
-				else if (pereche == 1) {
-					this->numeColoane[this->nrPerechiParametri] = this->parametriIntrare[ind];
-				}
 
-			}
+				this->valori_implicite = new char*[this->nrPerechiParametri];
+				this->dimensiuni = new char* [this->nrPerechiParametri];
+				this->tipuri = new char* [this->nrPerechiParametri];
+				this->numeColoane = new char* [this->nrPerechiParametri];
+				nrPerechiParametri = 0;
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						nrPerechiParametri++;
+						
+					}
+					else if (pereche == 3) {
+						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						
+					}
+					else if (pereche == 2) {
+						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						
+					}
+					else if (pereche == 1) {
+						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+						
+					}
 
+				}
+				cout << "Tabel: " << this->parametriIntrare[2] << endl;
+				pereche = 0;
+				this->nrPerechiParametri = 0;
+				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+					pereche++;
+					if (pereche == 4) {
+						pereche = 0;
+						cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+						this->nrPerechiParametri++;
+					}
+					else if (pereche == 3) {
+						cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 2) {
+						cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+					}
+					else if (pereche == 1) {
+						cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+					}
+
+				}
 		}
-
-	}
-	void setNumeColoane() {
-
+		
 	}
 
-	void verificareSintaxa() {
-
-	}
 	void generareTabela() {
 		int index = 2;
 	}
@@ -312,6 +343,11 @@ public:
 	bool existaPerechiParametri() {
 		if (this->nrPerechiParametri > 0) return true;
 		else return false;
+	}
+
+	~Create() {
+		
+		
 	}
 
 	friend class Interpretor;
@@ -565,8 +601,9 @@ public:
 	}
 
 	friend class Interpretor;
-	friend class VerificareFormat;
-	friend class Stiva;
+	~Display() {
+
+	}
 };
 
 class Tabela {
@@ -596,10 +633,12 @@ private:
 	char** parametriComanda = nullptr;
 	int nrParametri;
 	string comandaInitiala = "";
+	int nrParametriAjustati = 0;
 public:
 	Interpretor() {
 		this->dimensiuneComanda = 0;
 		this->nrParametri = 0;
+		this->nrParametriAjustati = 0;
 	}
 	Interpretor(string comandaIntreaga, int size) : dimensiuneComanda(size) {
 		this->comandaInitiala = comandaIntreaga;
@@ -627,6 +666,7 @@ public:
 			numec = strtok(nullptr, delim);
 			if (numec) i++;
 		}
+		this->nrParametriAjustati = i;
 		this->numeComanda = this->parametriComanda[0];
 	}
 
@@ -700,8 +740,6 @@ public:
 			throw ExceptieComandaGresita("Missing keyword");
 		}
 	}
-
-
 
 	~Interpretor() {
 		for (int i = 0; i < this->nrParametri; i++) {
