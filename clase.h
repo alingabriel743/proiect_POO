@@ -230,11 +230,11 @@ public:
 			if (this->numeColoane[i]) delete[] this->numeColoane[i];
 		}
 		delete[] this->numeColoane;
-		
+
 	}
 
 	friend class Interpretor;
-	
+
 };
 
 class Create {
@@ -249,7 +249,7 @@ private:
 	string comandaInitiala = "";
 
 public:
-	
+
 	Create(char** parametriIntrare, int nrParam, string comandaInitiala) {
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
@@ -261,79 +261,79 @@ public:
 			throw ExceptieComandaGresita("Eroare");
 		}
 		else {
-			if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0){
+			if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
 				throw ExceptieComandaGresita("Eroare");
 			}
 			int nrCaracteristi = this->nrParametriIntrare - 3;
-				if (nrCaracteristi % 4 != 0) {
-					throw ExceptieComandaGresita("Eroare");
+			if (nrCaracteristi % 4 != 0) {
+				throw ExceptieComandaGresita("Eroare");
 			}
 
-				int ind = 3;  
-				int pereche = 0; 
-				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->nrPerechiParametri++;
-					}
+			int ind = 3;
+			int pereche = 0;
+			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+				pereche++;
+				if (pereche == 4) {
+					pereche = 0;
+					this->nrPerechiParametri++;
+				}
+
+			}
+
+			this->valori_implicite = new char* [this->nrPerechiParametri];
+			this->dimensiuni = new char* [this->nrPerechiParametri];
+			this->tipuri = new char* [this->nrPerechiParametri];
+			this->numeColoane = new char* [this->nrPerechiParametri];
+			nrPerechiParametri = 0;
+			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+				pereche++;
+				if (pereche == 4) {
+					pereche = 0;
+					this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+					strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+					nrPerechiParametri++;
+
+				}
+				else if (pereche == 3) {
+					this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+					strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
+
+				}
+				else if (pereche == 2) {
+					this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+					strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
+
+				}
+				else if (pereche == 1) {
+					this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+					strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
 				}
 
-				this->valori_implicite = new char*[this->nrPerechiParametri];
-				this->dimensiuni = new char* [this->nrPerechiParametri];
-				this->tipuri = new char* [this->nrPerechiParametri];
-				this->numeColoane = new char* [this->nrPerechiParametri];
-				nrPerechiParametri = 0;
-				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						nrPerechiParametri++;
-						
-					}
-					else if (pereche == 3) {
-						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						
-					}
-					else if (pereche == 2) {
-						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						
-					}
-					else if (pereche == 1) {
-						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						
-					}
-
+			}
+			cout << "Tabel: " << this->parametriIntrare[2] << endl;
+			pereche = 0;
+			this->nrPerechiParametri = 0;
+			for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+				pereche++;
+				if (pereche == 4) {
+					pereche = 0;
+					cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+					this->nrPerechiParametri++;
 				}
-				cout << "Tabel: " << this->parametriIntrare[2] << endl;
-				pereche = 0;
-				this->nrPerechiParametri = 0;
-				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
-						this->nrPerechiParametri++;
-					}
-					else if (pereche == 3) {
-						cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
-					}
-					else if (pereche == 2) {
-						cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
-					}
-					else if (pereche == 1) {
-						cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
-					}
-
+				else if (pereche == 3) {
+					cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
 				}
+				else if (pereche == 2) {
+					cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+				}
+				else if (pereche == 1) {
+					cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+				}
+
+			}
 		}
-		
+
 	}
 
 	void generareTabela() {
@@ -346,8 +346,8 @@ public:
 	}
 
 	~Create() {
-		
-		
+
+
 	}
 
 	friend class Interpretor;
@@ -420,6 +420,45 @@ public:
 	}
 
 	friend class Interpretor;
+
+	friend ostream& operator<<(ostream& consola, Update& up) {
+
+		consola << "Tabela: " << up.parametriIntrare[1] << endl;
+		consola << "Coloana: " << up.parametriIntrare[3] << endl;
+		consola << "Valoare: " << up.parametriIntrare[4] << endl;
+		consola << "Filtru: " << up.parametriIntrare[6] << endl;
+		consola << "Vloare filtru: " << up.parametriIntrare[7] << endl;
+		return consola;
+	}
+
+	friend bool operator>=(Update c1, Update c2) {
+		if (c1.parametriIntrare[7] >= c2.parametriIntrare[7])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<=(Update c1, Update c2) {
+		if (c1.parametriIntrare[7] <= c2.parametriIntrare[7])
+			return true;
+		else return false;
+	}
+
+	friend bool operator>(Update c1, Update c2) {
+		if (c1.parametriIntrare[7] > c2.parametriIntrare[7])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<(Update c1, Update c2) {
+		if (c1.parametriIntrare[7] < c2.parametriIntrare[7])
+			return true;
+		else return false;
+	}
+	friend bool operator==(Update c1, Update c2) {
+		if (c1.parametriIntrare[7] == c2.parametriIntrare[7])
+			return true;
+		else return false;
+	}
 };
 
 class Insert {
@@ -455,7 +494,7 @@ public:
 					break;
 				}
 			}
-			
+
 			if (!esteValues) {
 				throw ExceptieComandaGresita("Eroare");
 			}
@@ -466,7 +505,7 @@ public:
 
 			int nrParametriInsert = this->nrParametriIntrare - 4;
 			if (nrParametriInsert == 0) throw ExceptieComandaGresita("Eroare");
-			this->nrParametriInserare= nrParametriInsert;
+			this->nrParametriInserare = nrParametriInsert;
 			bool corect = true;
 			int nrVirgule = 0;
 			for (int i = 0; i < this->comandaInitiala.size(); i++) {
@@ -495,7 +534,7 @@ public:
 	}
 
 	friend class Interpretor;
-	
+
 };
 
 class Delete {
@@ -547,6 +586,43 @@ public:
 	}
 
 	friend class Interpretor;
+
+	friend ostream& operator<<(ostream& consola, Delete& del) {
+
+		consola << "Tabela: " << del.parametriIntrare[2] << endl;
+		consola << "Coloana filtru: " << del.parametriIntrare[4] << " cu valoarea " << del.parametriIntrare[5];
+
+		return consola;
+	}
+
+	friend bool operator>=(Update c1, Update c2) {
+		if (c1.parametriIntrare[5] >= c2.parametriIntrare[5])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<=(Update c1, Update c2) {
+		if (c1.parametriIntrare[5] <= c2.parametriIntrare[5])
+			return true;
+		else return false;
+	}
+
+	friend bool operator>(Update c1, Update c2) {
+		if (c1.parametriIntrare[5] > c2.parametriIntrare[5])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<(Update c1, Update c2) {
+		if (c1.parametriIntrare[5] < c2.parametriIntrare[5])
+			return true;
+		else return false;
+	}
+	friend bool operator==(Update c1, Update c2) {
+		if (c1.parametriIntrare[5] == c2.parametriIntrare[5])
+			return true;
+		else return false;
+	}
 };
 
 class Drop {
@@ -574,6 +650,42 @@ public:
 	}
 
 	friend class Interpretor;
+
+	friend ostream& operator<<(ostream& consola, Drop& dr) {
+
+		consola << "Se va sterge tabela: " << dr.parametriIntrare[2];
+
+		return consola;
+	}
+
+	friend bool operator>=(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] >= c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<=(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] <= c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator>(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] > c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] < c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+	friend bool operator==(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] == c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
 };
 
 class Display {
@@ -604,6 +716,42 @@ public:
 	~Display() {
 
 	}
+	friend ostream& operator<<(ostream& consola, Display& dis) {
+
+		consola << "Se va afisa tabela: " << dis.parametriIntrare[2];
+
+		return consola;
+	}
+
+	friend bool operator>=(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] >= c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<=(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] <= c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator>(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] > c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
+	friend bool operator<(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] < c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+	friend bool operator==(Update c1, Update c2) {
+		if (c1.parametriIntrare[2] == c2.parametriIntrare[2])
+			return true;
+		else return false;
+	}
+
 };
 
 class Tabela {
@@ -752,9 +900,9 @@ public:
 	friend class Select;
 
 	friend ostream& operator<<(ostream& consola, Interpretor& inte) {
-		
+
 		inte.initializareComenzi();
-	
+
 		return consola;
 	}
 };
