@@ -1,7 +1,8 @@
-~#pragma once
+#pragma once
 #pragma warning(disable:4996)
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 //introducem Stiva in fisier nou
 class Stiva {
@@ -41,6 +42,24 @@ public:
 	}
 
 	friend class VerificareFormatParanteze;
+};
+
+class AccesFisier {
+private:
+	string numeFisier;
+public:
+	void citireDinFisier() {
+		
+	}
+};
+
+class ScriereInFisier {
+private:
+	string numeFisier;
+public:
+	void scriereInFisier() {
+
+	}
 };
 
 class ExceptieComandaGresita {
@@ -236,7 +255,7 @@ public:
 	friend class Interpretor;
 
 	char* operator[](int index) {
-		if(index >0 && index < this->nrColoane)
+		if (index > 0 && index < this->nrColoane)
 			return this->numeColoane[index];
 	}
 
@@ -322,6 +341,8 @@ public:
 
 				}
 				cout << "Tabel: " << this->parametriIntrare[2] << endl;
+				//scriu numele tabelei intr un fisier
+
 				pereche = 0;
 				this->nrPerechiParametri = 0;
 				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
@@ -420,7 +441,7 @@ public:
 
 	}
 
-	
+
 
 	bool existaPerechiParametri() {
 		if (this->nrPerechiParametri > 0) return true;
@@ -777,102 +798,6 @@ public:
 	}
 };
 
-class Tabela {
-private:
-	const int id;
-	string numeTabela;
-	static int nrTabela;
-	int nrColoane;
-public:
-
-	Tabela() : id(nrTabela) {
-		this->numeTabela = "";
-		this->nrColoane = 0;
-		nrTabela++;
-	}
-
-	Tabela(string nume) : id(nrTabela) {
-		this->numeTabela = nume;
-		nrTabela++;
-	}
-
-	Tabela(string nume, int numar_c) : id(nrTabela) {
-		this->numeTabela = nume;
-		this->nrColoane = numar_c;
-		nrTabela++;
-	}
-
-	Tabela(const Tabela& t) : id(nrTabela) {
-		this->numeTabela = t.numeTabela;
-		this->nrColoane = t.nrColoane;
-		
-	}
-
-	string getNumeTabela() {
-		return this->numeTabela;
-	}
-
-	int getNrColoane() {
-		return this->nrColoane;
-	}
-
-	void setNumeTabela(string numeT) {
-		if (numeT != "")
-			this->numeTabela = numeT;
-	}
-
-	void setNrColoane(int nr) {
-		if (nr != 0)
-			this->nrColoane = nr;
-	}
-
-	friend ostream& operator<<(ostream& consola, Tabela& tab) {
-
-		consola << "Nume tabela: " << tab.numeTabela << endl;
-		consola << "Numar tabela: " << tab.nrTabela << endl;
-		consola << "Numar coloane: " << tab.nrColoane << endl;
-
-		return consola;
-	}
-
-	friend istream& operator>>(istream& input, Tabela& tab) {
-
-		cout << "Nume tabela: ";
-		input >> tab.numeTabela;
-		cout << "Numar tabela: ";
-		input >> tab.nrTabela;
-		cout << "Numar coloane: ";
-		input >> tab.nrColoane;
-
-		return input;
-	}
-
-	Tabela operator+(const Tabela& t) {
-		this->nrColoane += t.nrColoane;
-		return *this;
-	}
-
-	void operator=(Tabela& t) {
-		this->numeTabela = t.numeTabela;
-		this->nrTabela = t.nrTabela;
-		this->nrColoane = t.nrColoane;
-	}
-
-	bool operator==(Tabela& t) {
-		if (this->numeTabela == t.numeTabela && this->nrTabela == t.nrTabela && this->nrColoane == t.nrColoane)
-			return true;
-		else return false;
-	}
-
-	void operator++() {
-		this->nrColoane++;
-	}
-	void operator++(int) {
-		this->nrColoane++;
-	}
-};
-int Tabela::nrTabela = 0;
-
 class Coloana {
 private:
 	string nume_coloana;
@@ -880,10 +805,14 @@ private:
 	string descriere;
 public:
 	Coloana() {
+
+	}
+
+	Coloana() {
 		this->nume_coloana = "";
 		this->tip = "";
 		this->descriere = "";
-		
+
 	}
 
 	Coloana(string nume_c, string desc) {
@@ -892,7 +821,7 @@ public:
 	}
 
 	Coloana(string nume_c, string tipul, string desc) :nume_coloana(nume_c), tip(tipul), descriere(desc) {
-		
+
 	}
 	Coloana(const Coloana& c) {
 		this->nume_coloana = c.nume_coloana;
@@ -988,6 +917,104 @@ public:
 	friend class Tabela;
 };
 
+class Tabela {
+private:
+	const int id;
+	string numeTabela;
+	static int nrTabela;
+	Coloana* coloane; //descriere relatie has-a
+	int nrColoane;
+
+public:
+
+	Tabela() : id(nrTabela) {
+		this->numeTabela = "";
+		this->nrColoane = 0;
+		nrTabela++;
+	}
+
+	Tabela(string nume) : id(nrTabela) {
+		this->numeTabela = nume;
+		nrTabela++;
+	}
+
+	Tabela(string nume, int numar_c) : id(nrTabela) {
+		this->numeTabela = nume;
+		this->nrColoane = numar_c;
+		nrTabela++;
+	}
+
+	Tabela(const Tabela& t) : id(nrTabela) {
+		this->numeTabela = t.numeTabela;
+		this->nrColoane = t.nrColoane;
+
+	}
+
+	string getNumeTabela() {
+		return this->numeTabela;
+	}
+
+	int getNrColoane() {
+		return this->nrColoane;
+	}
+
+	void setNumeTabela(string numeT) {
+		if (numeT != "")
+			this->numeTabela = numeT;
+	}
+
+	void setNrColoane(int nr) {
+		if (nr != 0)
+			this->nrColoane = nr;
+	}
+
+	friend ostream& operator<<(ostream& consola, Tabela& tab) {
+
+		consola << "Nume tabela: " << tab.numeTabela << endl;
+		consola << "Numar tabela: " << tab.nrTabela << endl;
+		consola << "Numar coloane: " << tab.nrColoane << endl;
+
+		return consola;
+	}
+
+	friend istream& operator>>(istream& input, Tabela& tab) {
+
+		cout << "Nume tabela: ";
+		input >> tab.numeTabela;
+		cout << "Numar tabela: ";
+		input >> tab.nrTabela;
+		cout << "Numar coloane: ";
+		input >> tab.nrColoane;
+
+		return input;
+	}
+
+	Tabela operator+(const Tabela& t) {
+		this->nrColoane += t.nrColoane;
+		return *this;
+	}
+
+	void operator=(Tabela& t) {
+		this->numeTabela = t.numeTabela;
+		this->nrTabela = t.nrTabela;
+		this->nrColoane = t.nrColoane;
+	}
+
+	bool operator==(Tabela& t) {
+		if (this->numeTabela == t.numeTabela && this->nrTabela == t.nrTabela && this->nrColoane == t.nrColoane)
+			return true;
+		else return false;
+	}
+
+	void operator++() {
+		this->nrColoane++;
+	}
+	void operator++(int) {
+		this->nrColoane++;
+	}
+};
+int Tabela::nrTabela = 0;
+
 class Users {
 private:
 	const int id;
@@ -1002,12 +1029,12 @@ public:
 		this->nume = "None";
 		nrUsers++;
 	}
-	Users(string nume, int nrModificari) : id(nrUsers){
+	Users(string nume, int nrModificari) : id(nrUsers) {
 		this->nume = nume;
 		this->noEntries = nrModificari;
 		nrUsers++;
 	}
-	Users(string nume, int* modificariAduse, int noEntries) : id(nrUsers){
+	Users(string nume, int* modificariAduse, int noEntries) : id(nrUsers) {
 		this->nume = nume;
 		this->noEntries = noEntries;
 		this->Modificari = modificariAduse;
@@ -1019,7 +1046,7 @@ public:
 		for (int i = 0; i < u.noEntries; i++) Modificari[i] = u.Modificari[i];
 		this->noEntries = u.noEntries;
 	}
-    
+
 	void setNume(string nume) {
 		this->nume = nume;
 	}
@@ -1078,7 +1105,7 @@ public:
 			numec = strtok(nullptr, delim);
 			if (numec) i++;
 		}
-	
+
 		this->numeComanda = this->parametriComanda[0];
 	}
 
@@ -1165,8 +1192,7 @@ public:
 		return consola;
 	}
 
-	char* &operator[](int index) {
+	char*& operator[](int index) {
 		return this->parametriComanda[index];
 	}
-
 };
