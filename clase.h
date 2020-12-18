@@ -29,18 +29,9 @@ public:
 			char x = a[top--];
 		}
 	}
-	void peek() {
-		if (top < 0) {
-			cout << "Stack is empty";
-		}
-		else {
-			char x = a[top];
-		}
-	}
 	bool isEmpty() {
 		return (top < 0);
 	}
-
 	friend class VerificareFormatParanteze;
 };
 
@@ -59,6 +50,22 @@ private:
 public:
 	void scriereInFisier() {
 
+	}
+};
+
+class VerificareNumeFisier {
+private:
+	string numeFisier;
+	string numeTabela;
+public:
+	void verificareExistenta() {
+		//parcuregere fisier
+
+		string buffer = "";
+		if (this->numeTabela == buffer) cout << "Tabela exista deja";
+		else {
+			//continua treaba
+		}
 	}
 };
 
