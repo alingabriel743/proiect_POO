@@ -56,8 +56,6 @@ public:
 				getline(fisier, comanda);
 				count++;
 			}
-			
-			cout << count;
 			this->linii = new string[count];
 			fisier.clear();
 			fisier.seekg(0);
@@ -90,13 +88,43 @@ public:
 	}
 };
 
-class ScriereInFisier {
-private:
-	string numeFisier;
+class CreareFisier {
+	char** numeColoane = nullptr;
+	char** tipuri = nullptr;
+	char** dimensiuni = nullptr;
+	char** valori_implicite = nullptr;
+	char** numeTabel = nullptr;
+	int nrPerechiParametri = 0;
+	
 public:
-	void scriereInFisier() {
-
+	CreareFisier(char** numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri) {
+		this->numeTabel = numeTabel;
+		this->numeColoane = numeC;
+		this->tipuri = tip;
+		this->dimensiuni = dim;
+		this->valori_implicite = val_impl;
+		this->nrPerechiParametri = nrPerechiParametri;
 	}
+
+	void generareFisier() {
+		//mut asta in for pentru ca exista cate un tabel in char** numeTabel
+		ofstream tabel(this->numeTabel, ios::out | ios::binary | ios::trunc);
+		if (tabel.is_open()) {
+			for (int i = 0; i < this->nrPerechiParametri; i++) {
+				tabel.write(this->numeColoane[i], sizeof(this->numeColoane[i]) * sizeof(char));
+				tabel.write(this->tipuri[i], sizeof(this->tipuri[i]) * sizeof(char));
+				tabel.write(this->dimensiuni[i], sizeof(int));
+				if (strcmp(this->tipuri[i], "integer")==0) {
+					tabel.write(this->valori_implicite[i], sizeof(int));
+				}
+				else if (!strcmp(this->valori_implicite[i], "text")) {
+					tabel.write(this->valori_implicite[i], sizeof(char));
+				}
+			}
+		}
+	}
+
+
 };
 
 class VerificareNumeFisier {
@@ -394,7 +422,7 @@ public:
 
 				}
 				cout << "Tabel: " << this->parametriIntrare[2] << endl;
-				//scriu numele tabelei intr un fisier
+				
 
 				pereche = 0;
 				this->nrPerechiParametri = 0;
@@ -506,6 +534,8 @@ public:
 		c.filtrareElemente();
 		return os;
 	}
+	CreareFisier crt(this->parametriIntrare[2])
+
 };
 
 class Update {
