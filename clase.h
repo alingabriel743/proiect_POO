@@ -38,7 +38,53 @@ public:
 class AccesFisier {
 private:
 	string numeFisier;
+	string* linii;
+	int nrLiniiFisier = 0;
 public:
+	AccesFisier(char* numeFisier) {
+		string numeF(numeFisier);
+		this->numeFisier = numeF;
+		this->linii = nullptr;
+	}
+
+	string* returnareComanda() {
+		ifstream fisier(this->numeFisier, ios::in);
+		int count = 0;
+		if (fisier.is_open()) {
+			string comanda;
+			while (!fisier.eof()) {
+				getline(fisier, comanda);
+				count++;
+			}
+			
+			cout << count;
+			this->linii = new string[count];
+			fisier.clear();
+			fisier.seekg(0);
+			string buffer;
+			for (int i = 0; i < count; i++) {
+				getline(fisier, buffer);
+				this->linii[i] = buffer;
+			}
+			this->nrLiniiFisier = count;
+			return this->linii;
+			fisier.close();
+		}
+		else { 
+			cout << "Nu se deschide"; 
+			return nullptr;
+		}
+		
+	}
+
+	string getNumeFisier() {
+		return this->numeFisier;
+	}
+
+	int getNrLiniiFisier() {
+		return this->nrLiniiFisier;
+	}
+
 	void citireDinFisier() {
 		
 	}
@@ -811,9 +857,6 @@ private:
 	string tip;
 	string descriere;
 public:
-	Coloana() {
-
-	}
 
 	Coloana() {
 		this->nume_coloana = "";
