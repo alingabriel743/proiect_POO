@@ -6,14 +6,16 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	string comanda;
-	getline(cin, comanda);
-	try {
-		Interpretor interp(comanda, comanda.size());
-		cout << interp;
+	AccesFisier acs(argv[1]);
+	//CreareFisier scriere(acs);
+	string* comanda = acs.returnareComanda();
+	for (int i = 0; i < acs.getNrLiniiFisier(); i++) {
+		try {
+			Interpretor interp(comanda[i], comanda[i].size());
+			cout << interp;
+		}
+		catch (ExceptieComandaGresita & ex) {
+			cout << ex.getMesaj() << endl;
+		}
 	}
-	catch (ExceptieComandaGresita & ex) {
-		cout << ex.getMesaj() << endl;
-	}
-
 }
