@@ -93,11 +93,11 @@ class CreareFisier {
 	char** tipuri = nullptr;
 	char** dimensiuni = nullptr;
 	char** valori_implicite = nullptr;
-	char** numeTabel = nullptr;
+	char* numeTabel = nullptr;
 	int nrPerechiParametri = 0;
 	
 public:
-	CreareFisier(char** numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri) {
+	CreareFisier(char* numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri) {
 		this->numeTabel = numeTabel;
 		this->numeColoane = numeC;
 		this->tipuri = tip;
@@ -106,9 +106,10 @@ public:
 		this->nrPerechiParametri = nrPerechiParametri;
 	}
 
-	void generareFisier() {
-		//mut asta in for pentru ca exista cate un tabel in char** numeTabel
-		ofstream tabel(this->numeTabel, ios::out | ios::binary | ios::trunc);
+	void generareFisiere() {
+		string numeFisierDescriere(this->numeTabel);
+		numeFisierDescriere += "_descriere";
+		ofstream tabel(numeFisierDescriere, ios::out | ios::binary | ios::trunc);
 		if (tabel.is_open()) {
 			for (int i = 0; i < this->nrPerechiParametri; i++) {
 				tabel.write(this->numeColoane[i], sizeof(this->numeColoane[i]) * sizeof(char));
@@ -121,7 +122,15 @@ public:
 					tabel.write(this->valori_implicite[i], sizeof(char));
 				}
 			}
+			tabel.close();
 		}
+		else {
+			cout << "Nu s-a deschis";
+		}
+
+		string numeFisierDate(this->numeTabel);
+		numeFisierDate += "_date";
+		ofstream tabelDate(numeFisierDate, ios::out | ios::binary | ios::trunc);
 	}
 
 
@@ -354,6 +363,7 @@ private:
 	char** tipuri = nullptr;
 	char** dimensiuni = nullptr;
 	char** valori_implicite = nullptr;
+	char* numeTabel = nullptr;
 	int nrPerechiParametri = 0;
 	string comandaInitiala = "";
 
@@ -394,6 +404,7 @@ public:
 				this->dimensiuni = new char* [this->nrPerechiParametri];
 				this->tipuri = new char* [this->nrPerechiParametri];
 				this->numeColoane = new char* [this->nrPerechiParametri];
+		
 				nrPerechiParametri = 0;
 				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
 					pereche++;
@@ -421,9 +432,10 @@ public:
 					}
 
 				}
+				this->numeTabel = new char[sizeof(this->parametriIntrare[2])];
+				strcpy(this->numeTabel, this->parametriIntrare[2]);
 				cout << "Tabel: " << this->parametriIntrare[2] << endl;
 				
-
 				pereche = 0;
 				this->nrPerechiParametri = 0;
 				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
@@ -530,11 +542,13 @@ public:
 	}
 
 	friend class Interpretor;
+	friend class CreareFisier;
 	friend ostream& operator<<(ostream& os, Create& c) {
 		c.filtrareElemente();
+		CreareFisier crt(c.parametriIntrare[2], c.numeColoane, c.tipuri, c.dimensiuni, c.valori_implicite, c.nrPerechiParametri);
 		return os;
 	}
-	CreareFisier crt(this->parametriIntrare[2])
+	
 
 };
 
@@ -1276,3 +1290,5 @@ public:
 		return this->parametriComanda[index];
 	}
 };
+
+
