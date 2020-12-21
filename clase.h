@@ -35,13 +35,13 @@ public:
 	friend class VerificareFormatParanteze;
 };
 
-class AccesFisier {
+class AccesFisierComenzi {
 private:
 	string numeFisier;
 	string* linii;
 	int nrLiniiFisier = 0;
 public:
-	AccesFisier(char* numeFisier) {
+	AccesFisierComenzi(char* numeFisier) {
 		string numeF(numeFisier);
 		this->numeFisier = numeF;
 		this->linii = nullptr;
@@ -97,7 +97,7 @@ class CreareFisier {
 	int nrPerechiParametri = 0;
 	
 public:
-	CreareFisier(char* numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri) {
+	CreareFisier(char* numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri){
 		this->numeTabel = numeTabel;
 		this->numeColoane = numeC;
 		this->tipuri = tip;
@@ -106,17 +106,8 @@ public:
 		this->nrPerechiParametri = nrPerechiParametri;
 	}
 
-
 	void generareFisiere() {
-		ofstream fisiere("numeTabeleFisiere", ios::out | ios::binary | ios::app);
-		if (fisiere) {
-			string buffer(this->numeTabel);
-			int dim = buffer.size() + 1;
-			fisiere.write((char*)&dim, sizeof(int));
-			fisiere.write(buffer.c_str(), dim * sizeof(char));
-			fisiere.close();
-		}
-		else cout << "Sa te ia dracul";
+		
 		string numeFisierDescriere(this->numeTabel);
 		numeFisierDescriere += "_descriere";
 		ofstream tabel(numeFisierDescriere, ios::out | ios::binary | ios::trunc);
@@ -161,6 +152,30 @@ public:
 		numeFisierDate += "_date";
 		ofstream tabelDate(numeFisierDate, ios::out | ios::binary | ios::trunc);
 		tabelDate.close();
+	}
+
+	void generareFisierTabele() {
+		
+		fstream fisiere("numeTabeleFisiere", ios::out | ios::in | ios::binary | ios::app);
+		if (fisiere) {
+			bool existaNume = false; //presupunem ca nu exista numele deja
+			while (!fisiere.eof()) {
+				//citim dimensiune nume tabel
+				int dim = 0;
+				fisiere.read((char*)&dim, sizeof(int));
+				//citim numele tabelului
+				char buffer[100];
+				fisiere.read(buffer, dim * sizeof(char));
+				if (strcmp(buffer, this->numeTabel) != 0) {
+					existaNume = true;
+				}
+				cout << endl << buffer;
+			}
+			
+			
+		}
+		else cout << "Sa te ia dracul";
+
 	}
 
 
@@ -495,6 +510,7 @@ public:
 					}
 					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
 					crt.generareFisiere();
+					crt.generareFisierTabele();
 
 				}
 				else cout << "Eroare";
@@ -574,6 +590,7 @@ public:
 					}
 					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
 					crt.generareFisiere();
+					crt.generareFisierTabele();
 				}
 				else cout << "Eroare";
 			}
