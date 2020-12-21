@@ -35,13 +35,13 @@ public:
 	friend class VerificareFormatParanteze;
 };
 
-class AccesFisierComenzi {
+class AccesFisier {
 private:
 	string numeFisier;
 	string* linii;
 	int nrLiniiFisier = 0;
 public:
-	AccesFisierComenzi(char* numeFisier) {
+	AccesFisier(char* numeFisier) {
 		string numeF(numeFisier);
 		this->numeFisier = numeF;
 		this->linii = nullptr;
@@ -68,11 +68,11 @@ public:
 			return this->linii;
 			fisier.close();
 		}
-		else { 
-			cout << "Nu se deschide"; 
+		else {
+			cout << "Nu se deschide";
 			return nullptr;
 		}
-		
+
 	}
 
 	string getNumeFisier() {
@@ -84,7 +84,7 @@ public:
 	}
 
 	void citireDinFisier() {
-		
+
 	}
 };
 
@@ -95,9 +95,9 @@ class CreareFisier {
 	char** valori_implicite = nullptr;
 	char* numeTabel = nullptr;
 	int nrPerechiParametri = 0;
-	
+
 public:
-	CreareFisier(char* numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri){
+	CreareFisier(char* numeTabel, char** numeC, char** tip, char** dim, char** val_impl, int nrPerechiParametri) {
 		this->numeTabel = numeTabel;
 		this->numeColoane = numeC;
 		this->tipuri = tip;
@@ -106,8 +106,17 @@ public:
 		this->nrPerechiParametri = nrPerechiParametri;
 	}
 
+
 	void generareFisiere() {
-		
+		ofstream fisiere("numeTabeleFisiere", ios::out | ios::binary | ios::app);
+		if (fisiere) {
+			string buffer(this->numeTabel);
+			int dim = buffer.size() + 1;
+			fisiere.write((char*)&dim, sizeof(int));
+			fisiere.write(buffer.c_str(), dim * sizeof(char));
+			fisiere.close();
+		}
+		else cout << "Sa te ia dracul";
 		string numeFisierDescriere(this->numeTabel);
 		numeFisierDescriere += "_descriere";
 		ofstream tabel(numeFisierDescriere, ios::out | ios::binary | ios::trunc);
@@ -154,31 +163,71 @@ public:
 		tabelDate.close();
 	}
 
-	void generareFisierTabele() {
-		
-		fstream fisiere("numeTabeleFisiere", ios::out | ios::in | ios::binary | ios::app);
-		if (fisiere) {
-			bool existaNume = false; //presupunem ca nu exista numele deja
-			while (!fisiere.eof()) {
-				//citim dimensiune nume tabel
-				int dim = 0;
-				fisiere.read((char*)&dim, sizeof(int));
-				//citim numele tabelului
-				char buffer[100];
-				fisiere.read(buffer, dim * sizeof(char));
-				if (strcmp(buffer, this->numeTabel) != 0) {
-					existaNume = true;
-				}
-				cout << endl << buffer;
-			}
-			
-			
+
+};
+
+class DisplayFisier {
+private:
+	char** numeColoane = nullptr;
+	char** tipuri = nullptr;
+	char** dimensiuni = nullptr;
+	char** valori_implicite = nullptr;
+	char* numeTabel = nullptr;
+	int nrPerechiParametri=0;  //trb sa le numar
+public:
+	void showData()
+	{
+		cout << "Tabela : " << this->numeTabel<<endl;
+		for (int i = 0; i < this->nrPerechiParametri; i++) {
+			cout << "Nume coloana : " << this->numeColoane[i] << endl;
+			cout << "Tip : " << this->tipuri[i] << endl;
+			cout << "Valori implicite : " << this->valori_implicite << endl;
 		}
-		else cout << "Sa te ia dracul";
-
+		
 	}
+	void display()
+	{
+		ifstream inFile;
+		inFile.open(this->numeTabel, ios::binary);
 
+		DisplayFisier obj;
 
+		while (inFile.read((char*)&obj, sizeof(obj)))
+		{
+			obj.showData();
+		}
+
+		inFile.close();
+	}
+	
+};
+
+class DropFisier {
+private:
+	char** numeColoane = nullptr;
+	char** tipuri = nullptr;
+	char** dimensiuni = nullptr;
+	char** valori_implicite = nullptr;
+	char* numeTabel = nullptr;
+	int nrPerechiParametri = 0;  //trb sa le numar
+
+public:
+	void DropFis(char *coloana, char* tip, char* dim, char* val, char* numeTab ) 
+	{
+		int ok = 0;
+
+		ifstream ifs;
+		ifs.open("fisierDrop.txt", ios::in | ios::binary);
+
+		ofstream ofs;
+		ofs.open("temp.dat", ios::out | ios::binary);
+		while (!ifs.eof()) {
+			ifs.read((char*)this, sizeof(DropFisier));
+			if (ifs) {
+				if()
+			}
+		}
+	}
 };
 
 class VerificareNumeFisier {
@@ -483,7 +532,7 @@ public:
 						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
 					}
-					
+
 				}
 				if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
 				else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
@@ -510,7 +559,6 @@ public:
 					}
 					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
 					crt.generareFisiere();
-					crt.generareFisierTabele();
 
 				}
 				else cout << "Eroare";
@@ -590,7 +638,6 @@ public:
 					}
 					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
 					crt.generareFisiere();
-					crt.generareFisierTabele();
 				}
 				else cout << "Eroare";
 			}
