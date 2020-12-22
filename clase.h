@@ -119,6 +119,7 @@ private:
 	char** valori_implicite = nullptr;
 	char* numeTabel = nullptr;
 	int nrPerechiParametri = 0;  //trb sa le numar
+
 public:
 	void showData()
 	{
@@ -132,17 +133,22 @@ public:
 	}
 	void display()
 	{
-		ifstream inFile;
-		inFile.open(this->numeTabel, ios::binary);
+		ifstream fisier;
+		fisier.open(this->numeTabel, ios::binary);
+		VerificareNumeTabel verif(this->numeTabel);
+		if (!verif.existaFisier()) {
+			DisplayFisier obj;
 
-		DisplayFisier obj;
-
-		while (inFile.read((char*)&obj, sizeof(obj)))
-		{
-			obj.showData();
+			string buffer;
+			while (!fisier.eof()) {
+				obj.showData();
+			}
 		}
-
-		inFile.close();
+		else {
+			cout << "Fisieul nu exista!";
+		
+		}
+	
 	}
 
 };
