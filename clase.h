@@ -1067,6 +1067,12 @@ public:
 	}
 };
 
+class BazaDeDate {
+private:
+	Tabela* tabela;  //relatie has-a
+	const int id;
+};
+
 class Coloana {
 private:
 	string nume_coloana;
