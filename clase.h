@@ -285,28 +285,17 @@ public:
 
 class DropFisier {
 private:
-	char** numeColoane = nullptr;
-	char** tipuri = nullptr;
-	char** dimensiuni = nullptr;
-	char** valori_implicite = nullptr;
 	char* numeTabel = nullptr;
-	int nrPerechiParametri = 0;  //trb sa le numar
-
 public:
-	void DropFis(char* coloana, char* tip, char* dim, char* val, char* numeTab)
+	void DropFis(char* numeTab)
 	{
-		int ok = 0;
-
-		ifstream ifs;
-		ifs.open("fisierDrop.txt", ios::in | ios::binary);
-
-		ofstream ofs;
-		ofs.open("temp.dat", ios::out | ios::binary);
-		while (!ifs.eof()) {
-			ifs.read((char*)this, sizeof(DropFisier));
-			if (ifs) {
-				if ()
-			}
+		ifstream fisier;
+		VerificareNumeTabel verif(this->numeTabel);
+		if (!verif.existaFisier()) {
+			remove(this->numeTabel);
+		}
+		else {
+			cout << "Fisierul nu exista!";
 		}
 	}
 };
