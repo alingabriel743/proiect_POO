@@ -287,6 +287,9 @@ class DropFisier {
 private:
 	char* numeTabel = nullptr;
 public:
+	DropFisier(char* nume, VerificareNumeTabel verif): vf(verif) {
+        this->numeTabel = nume;
+    }
 	void DropFis(char* numeTab)
 	{
 		ifstream fisier;
