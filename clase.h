@@ -95,7 +95,7 @@ public:
 		this->numeFisier = nume;
 	}
 
-	bool existaFisier() {
+	bool existaTabel() {
 		ifstream fisier("numeTabeleFisiere.txt", ios::in);
 		if (fisier.is_open()) {
 			string buffer;
@@ -136,7 +136,7 @@ public:
 		ifstream fisier;
 		fisier.open(this->numeTabel, ios::binary);
 		VerificareNumeTabel verif(this->numeTabel);
-		if (!verif.existaFisier()) {
+		if (!verif.existaTabel()) {
 			DisplayFisier obj;
 
 			string buffer;
@@ -294,7 +294,7 @@ public:
 	{
 		ifstream fisier;
 		VerificareNumeTabel verif(this->numeTabel);
-		if (!verif.existaFisier()) {
+		if (!verif.existaTabel()) {
 			remove(this->numeTabel);
 		}
 		else {
