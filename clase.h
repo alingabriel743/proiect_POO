@@ -114,25 +114,35 @@ public:
 
 class ImportFisier {
 private:
-	string* parametriDeImport = nullptr;
+	string numeFisier;
 	int nrParametri = 0;
 	string numeTabela = "";
 	int nrLiniiTabela = 0;
 public:
-	ImportFisier(string* parametri, int numar, char* nume) {
-		this->parametriDeImport = parametri;
+	ImportFisier(char* numeFisier, int numar, char* nume) {
+		this->numeFisier = numeFisier;
 		this->nrParametri = numar;
 		this->numeTabela = nume;
 	}
-	void setNrLiniiTabela() {
-		ifstream fisier(this->numeTabela + "_descriere.txt");
-		string buffer;
-		while (getline(fisier, buffer)) {
-			this->nrLiniiTabela++;
+	void importFis() {
+		ifstream fisier((string)this->numeTabela + "_descriere.txt");
+		ifstream fiscsv("import.csv", ios::in);
+		ofstream tabel((string)this->numeTabela, ios::binary | ios::app);
+		if (tabel) {
+			string buffer;
+			while (getline(fiscsv, buffer, '#')) {
+				int dim = buffer.size()+1;
+				tabel.write((char*)&dim, sizeof(int));
+				tabel.write(buffer.c_str(), dim * sizeof(char));
+			}
+
+			fisier.close();
+			fiscsv.close();
+			tabel.close();
 		}
 	}
 	
-	};
+};
 
 class VerificareTipuriDate {
 	string numeParametru;
@@ -191,7 +201,7 @@ public:
 			fstream fisier(this->numeTabela + "_date", ios::in | ios::out | ios::binary | ios::app);
 			ifstream desc(this->numeTabela + "_descriere.txt", ios::in);
 			if (fisier) { 
-				if (this->nrLiniiTabela = this->nrParametri * 4) {
+				if (this->nrLiniiTabela == this->nrParametri * 4) {
 					for (int i = 0; i < this->nrParametri; i++) {
 						int j = 0;
 						string buffer;
@@ -215,8 +225,7 @@ public:
 							}
 						}
 						else if (cuvinte[1] == "text") {
-							//VerificareTipuriDate verif(this->parametriDeInserat[i]);
-							//if (verif.esteLitera() || verif.esteNumeric()) {
+		
 							string temp(this->parametriDeInserat[i]);
 							int dim = temp.size() + 1;
 							fisier.write((char*)&dim, sizeof(int));
@@ -1683,18 +1692,17 @@ public:
 	}
 
 	void filtrareElemente() {
-		if (nrParametriIntrare != 2) {
+		if (this->nrParametriIntrare - 1 != 2) {
 			throw ExceptieComandaGresita("Eroare");
 		}
 		else {
-			cout<<"Se vor insera coloanele din fisierul "<<parametriIntrare[2]<<" in tabela "<<"parametriIntrare[1]<<endl;
-			this->numeTabela=this->parametriIntrare[1];
-			this->numeFisier=this->parametriIntrare[2];
-			ImportFisier import(this->numeFisier);
-			import.ImportFis();
+			cout << "Se vor insera coloanele din fisierul " << parametriIntrare[2] << " in tabela " << parametriIntrare[1]  << endl;
+			this->numeTabela = this->parametriIntrare[1];
+			this->numeFisier = this->parametriIntrare[2];
+			ImportFisier import(this->numeFisier, this->nrParametriIntrare, this->numeTabela);
+			import.importFis();
 		}
 	}
-
 };
 
 class Drop {
@@ -1818,70 +1826,52 @@ private:
 	string tip;
 	string descriere;
 public:
-
 	Coloana() {
 		this->nume_coloana = "";
 		this->tip = "";
 		this->descriere = "";
-
 	}
-
 	Coloana(string nume_c, string desc) {
 		this->nume_coloana = nume_c;
 		this->descriere = desc;
 	}
-
 	Coloana(string nume_c, string tipul, string desc) :nume_coloana(nume_c), tip(tipul), descriere(desc) {
-
 	}
 	Coloana(const Coloana& c) {
 		this->nume_coloana = c.nume_coloana;
 		this->descriere = c.descriere;
 		this->tip = c.tip;
 	}
-
 	string getNumeColoana() {
 		return this->nume_coloana;
 	}
-
 	string getTip() {
 		return this->tip;
 	}
-
 	string getDescriere() {
 		return this->descriere;
 	}
-
 	void setNumeColoana(string nume_c) {
 		if (nume_c != "") {
 			this->nume_coloana = nume_c;
 		}
-
 	}
-
 	void setDescriere(string descr) {
 		if (descr != "") {
 			this->descriere = descr;
 		}
-
 	}
-
 	void setTip(string tipul) {
 		if (tipul != "") {
 			this->tip = tipul;
 		}
-
 	}
-
 	friend ostream& operator<<(ostream& consola, Coloana& col) {
-
 		consola << "Nume coloana: " << col.nume_coloana << endl;
 		consola << "Tipul: " << col.tip << endl;
 		consola << "Descriere: " << col.descriere << endl;
-
 		return consola;
 	}
-
 	friend istream& operator>>(istream& input, Coloana& col) {
 		cout << "Nume coloana: ";
 		input >> col.nume_coloana;
@@ -1891,25 +1881,21 @@ public:
 		input >> col.descriere;
 		return input;
 	}
-
 	void operator=(Coloana& c) {
 		this->nume_coloana = c.nume_coloana;
 		this->tip = c.tip;
 		this->descriere = c.descriere;
 	}
-
 	bool operator!() {
 		if (this->nume_coloana == "") {
 			return true;
 		}
 		else return false;
 	}
-
 	bool operator==(Coloana& c) {
 		if (this->nume_coloana == c.nume_coloana && this->tip == c.tip && this->descriere == c.descriere)
 			return true;
 		else return false;
-
 	}
 	//prefixata
 	Coloana operator--() {
@@ -1935,88 +1921,68 @@ private:
 	static int nrTabela;
 	Coloana* coloane; //descriere relatie has-a
 	int nrColoane;
-
 public:
-
 	Tabela() : id(nrTabela) {
 		this->numeTabela = "";
 		this->nrColoane = 0;
 		nrTabela++;
 	}
-
 	Tabela(string nume) : id(nrTabela) {
 		this->numeTabela = nume;
 		nrTabela++;
 	}
-
 	Tabela(string nume, int numar_c) : id(nrTabela) {
 		this->numeTabela = nume;
 		this->nrColoane = numar_c;
 		nrTabela++;
 	}
-
 	Tabela(const Tabela& t) : id(nrTabela) {
 		this->numeTabela = t.numeTabela;
 		this->nrColoane = t.nrColoane;
-
 	}
-
 	string getNumeTabela() {
 		return this->numeTabela;
 	}
-
 	int getNrColoane() {
 		return this->nrColoane;
 	}
-
 	void setNumeTabela(string numeT) {
 		if (numeT != "")
 			this->numeTabela = numeT;
 	}
-
 	void setNrColoane(int nr) {
 		if (nr != 0)
 			this->nrColoane = nr;
 	}
-
 	friend ostream& operator<<(ostream& consola, Tabela& tab) {
-
 		consola << "Nume tabela: " << tab.numeTabela << endl;
 		consola << "Numar tabela: " << tab.nrTabela << endl;
 		consola << "Numar coloane: " << tab.nrColoane << endl;
-
 		return consola;
 	}
-
 	friend istream& operator>>(istream& input, Tabela& tab) {
-
 		cout << "Nume tabela: ";
 		input >> tab.numeTabela;
 		cout << "Numar tabela: ";
 		input >> tab.nrTabela;
 		cout << "Numar coloane: ";
 		input >> tab.nrColoane;
-
 		return input;
 	}
-
 	Tabela operator+(const Tabela& t) {
 		this->nrColoane += t.nrColoane;
 		return *this;
 	}
-
 	void operator=(Tabela& t) {
 		this->numeTabela = t.numeTabela;
 		this->nrTabela = t.nrTabela;
 		this->nrColoane = t.nrColoane;
 	}
-
 	bool operator==(Tabela& t) {
 		if (this->numeTabela == t.numeTabela && this->nrTabela == t.nrTabela && this->nrColoane == t.nrColoane)
 			return true;
 		else return false;
 	}
-
 	void operator++() {
 		this->nrColoane++;
 	}
@@ -2031,6 +1997,7 @@ private:
 	Tabela* tabela;  //relatie has-a
 	const int id;
 };
+
 
 class Users {
 private:
@@ -2198,7 +2165,7 @@ public:
 		}
 		else if (strcmp(this->numeComanda, "IMPORT") == 0) {
 			Import imp(this->parametriComanda, this->nrParametri);
-			dis.filtrareElemente();
+			imp.filtrareElemente();
 		}
 		else {
 			throw ExceptieComandaGresita("Eroare");
