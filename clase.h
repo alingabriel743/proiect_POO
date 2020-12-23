@@ -1687,7 +1687,11 @@ public:
 			throw ExceptieComandaGresita("Eroare");
 		}
 		else {
-
+			cout<<"Se vor insera coloanele din fisierul "<<parametriIntrare[2]<<" in tabela "<<"parametriIntrare[1]<<endl;
+			this->numeTabela=this->parametriIntrare[1];
+			this->numeFisier=this->parametriIntrare[2];
+			ImportFisier import(this->numeFisier);
+			import.ImportFis();
 		}
 	}
 
@@ -2193,7 +2197,8 @@ public:
 			dis.filtrareElemente();
 		}
 		else if (strcmp(this->numeComanda, "IMPORT") == 0) {
-
+			Import imp(this->parametriComanda, this->nrParametri);
+			dis.filtrareElemente();
 		}
 		else {
 			throw ExceptieComandaGresita("Eroare");
