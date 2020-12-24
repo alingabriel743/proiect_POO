@@ -341,7 +341,7 @@ public:
 			}
 			fisiere.close();
 		}
-		else cout << "Sa te ia dracul";
+		else cout << "Eroare";
 
 		ofstream fisier("numeTabeleFisiere.txt", ios::out | ios::app);
 		if (fisier && !exista) {
