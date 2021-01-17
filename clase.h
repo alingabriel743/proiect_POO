@@ -998,13 +998,20 @@ public:
 };
 
 class Comanda {
+    int lungime=0;
+    Comanda* var[10];
 public:
     virtual void printTab() = 0;
     virtual int nrParam() = 0;
-    // VECTOR DE POINTERI!
-    // Comanda* Vect || vector<Comanda> vect;
+    void VectorPointer() {
+        this->lungime = 10;
+        vector<Comanda> vect;
+        Comanda* var[10];
+        for (int i = 0; i < 10; i++) {
+            vect[i] = *var[i];
+        }
+    }
 };
-
 
 class Select: public Comanda {
 private:
