@@ -3,6 +3,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <set>
+#include <list>
+#include <map>
 using namespace std;
 
 class Stiva {
@@ -106,7 +110,7 @@ public:
                 }
             }
             fisier.close();
-            return false;
+         return false;
         }
         else cout << "Fisierul nu s-a deschis";
     }
@@ -997,6 +1001,8 @@ class Comanda {
 public:
     virtual void printTab() = 0;
     virtual int nrParam() = 0;
+    // VECTOR DE POINTERI!
+    // Comanda* Vect || vector<Comanda> vect;
 };
 
 
@@ -1179,8 +1185,11 @@ public:
     }
 
     bool existaColoane() {
-        if (this->nrColoane > 0) return true;
-        else return false;
+        if (this->nrColoane > 0)
+            return true;
+       else {
+            return false;
+            }
     }
 
     ~Select() {
@@ -1434,8 +1443,8 @@ public:
     }
 };
 
-class Update {
-private:
+class Update: public Comanda {
+protected:
     char** parametriIntrare = nullptr;
     int nrParametriIntrare;
     char* numeTabela = nullptr;
@@ -1445,7 +1454,21 @@ private:
     char* valoareWhere = nullptr;
     //UpdateFisier upd;
 public:
-
+    void printTab() {
+        cout << "Tabela selectata pentru actualizare este " << this->numeTabela << endl;
+        cout << "Se actualizeaza coloana: " << this->numeColoana << endl;
+        cout << "Avand conditia " << this->numeColWhere << " = " << this->valoareWhere << endl;
+    }
+     
+    int nrParam() {
+        for(int i = 0; i < nrParametriIntrare; i++) {
+            cout << "Parametri comenzii introdusi sunt:" << endl;
+            cout << this->parametriIntrare[i];
+       }
+        cout << endl;
+        return 1;
+    }
+    
     Update(char** parametriIntrare, int nrParam) {
         this->parametriIntrare = parametriIntrare;
         this->nrParametriIntrare = nrParam;
@@ -1624,8 +1647,8 @@ public:
 
 };
 
-class Delete {
-private:
+class Delete: public Comanda {
+protected:
     char** parametriIntrare = nullptr;
     int nrParametriIntrare;
     char* numeTabel = nullptr;
@@ -1634,6 +1657,16 @@ private:
 
 public:
 
+    void printTab() {
+        cout << "Tabela pentru care se sterge o inregistrare este: " << this->numeTabel << endl;
+        cout << "Inregistrarea " << this->valoareWhere << " din coloana " << this->coloanaWhere << " va fi eliminata" << endl;
+    }
+    
+    int nrParam() {
+        cout << "Parametri comenzii DELETE sunt in numar de: "; return this->nrParametriIntrare;
+        
+    }
+    
     Delete(char** parametriIntrare, int nrParam) {
         this->parametriIntrare = parametriIntrare;
         this->nrParametriIntrare = nrParam;
@@ -2028,6 +2061,7 @@ protected:
     string nume;
     int noEntries;
     int sectiuniAlocate[15];
+    int* pe = nullptr;
 public:
     Users() : id(nrUsers) {
         this->noEntries = 0;
@@ -2069,16 +2103,24 @@ public:
         os >> u.noEntries;
         return os;
     }
+ 
+    friend ostream& operator<<(ostream& os, Users& u)
+    {
+        os << u.nume << endl;
+        os << u.noEntries << endl;
+        return os;
+    }
 
 };
 
 class BazaDeDate: public Users {
   Tabela* tabela;  //relatie has-a
     int cod = 0;
+    string nume = " ";
 public:
-  //  BazaDeDate(int Id, int Cod): Users() {
-  //    this->cod = Cod;
-      
+    BazaDeDate(string Nume, int* Modif, int Cod): Users(Nume, *Modif) {
+         this->cod = Cod;
+       }
 };
 
 class Interpretor {
@@ -2231,12 +2273,8 @@ public:
 };
 
 
-
 class Abstract {
 public:
      virtual int getLungime() = 0;
      virtual void print() = 0;
  };
-
-
-
