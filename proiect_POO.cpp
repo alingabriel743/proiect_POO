@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
     us[1] = u2;
     us[3] = u3;
     us.push_back(u4);
-
+    
     vector<Users>::iterator i;
     for (i = us.begin(); i != us.end(); i++) {
         cout << *i << " ";
     }
     cout << endl;
-
+    
     list<Users> li = { u1, u2, u3, u4 };
     list<Users>::iterator it;
     Users u5("Silviu", 777);
@@ -41,14 +41,14 @@ int main(int argc, char* argv[]) {
     for (it = li.begin(); it != li.end(); it++) {
         cout << *it << " ";
     }
-
+    //de aici e problema
     set<Users> s1 = { u1, u2, u3, u4, u5 };
     set<Users>::iterator its;
     for (its = s1.begin(); its != s1.end(); its++) {
         cout << &its << ", ";
         cout << endl;
-    }
-
+    } 
+    //de aici e ok
     map<string, int> mp;
     mp.insert(pair<string, int>("Popescu", 2));
     mp.insert(pair<string, int>("Ana", 7));
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 
     map<string, int>::iterator itr;
     cout << "\nMapa mp este : \n";
-    cout << "\tNUME\tID\n";
+    cout << "\tNUME\t  ID\n";
     for (itr = mp.begin(); itr != mp.end(); ++itr) {
         cout << '\t' << itr->first
             << '\t' << itr->second << '\n';
