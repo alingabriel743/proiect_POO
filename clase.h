@@ -7,6 +7,7 @@
 #include <set>
 #include <list>
 #include <map>
+#include<iterator>
 #include <sstream>
 using namespace std;
 
@@ -77,7 +78,7 @@ public:
             cout << "Nu se deschide";
             return nullptr;
         }
-        
+
     }
 
     string getNumeFisier() {
@@ -89,7 +90,7 @@ public:
     }
 
     void citireDinFisier() {
-        
+
     }
 };
 
@@ -102,7 +103,7 @@ public:
 
     bool existaTabel() {
         ifstream fisier("numeTabeleFisiere.txt", ios::in);
-        
+
         if (fisier.is_open()) {
             string buffer;
             while (fisier >> buffer) {
@@ -111,7 +112,7 @@ public:
                 }
             }
             fisier.close();
-         return false;
+            return false;
         }
         else cout << "Fisierul nu s-a deschis";
     }
@@ -119,46 +120,46 @@ public:
 
 class ImportFisier {
 private:
-	string numeFisier;
-	int nrParametri = 0;
-	string numeTabela = "";
-	int nrLiniiTabela = 0;
+    string numeFisier;
+    int nrParametri = 0;
+    string numeTabela = "";
+    int nrLiniiTabela = 0;
 public:
-	ImportFisier(char* numeFisier, int numar, char* nume) {
-		this->numeFisier = numeFisier;
-		this->nrParametri = numar;
-		this->numeTabela = nume;
-	}
-	void importFis() {
-		ifstream fisier((string)this->numeTabela + "_descriere.txt");
-		ifstream fiscsv("import.csv", ios::in);
-		ofstream tabel((string)this->numeTabela + "_date", ios::binary | ios::app);
-		if (tabel) {
-			string buffer;
-			while (getline(fiscsv, buffer)) {
-				stringstream input(buffer);
-				vector<string> elemente;
-				string token = "";
-				while (getline(input, token, '#')) {
-					elemente.push_back(token);
-				}
-				for (int i = 0; i < elemente.size(); i++) {
-					int dim = elemente[i].size() + 1;
-					tabel.write((char*)&dim, sizeof(int));
-					tabel.write(elemente[i].c_str(), dim * sizeof(char));
-				}
-			}
-			fisier.close();
-			fiscsv.close();
-			tabel.close();
-		}
-	}
-	
+    ImportFisier(char* numeFisier, int numar, char* nume) {
+        this->numeFisier = numeFisier;
+        this->nrParametri = numar;
+        this->numeTabela = nume;
+    }
+    void importFis() {
+        ifstream fisier((string)this->numeTabela + "_descriere.txt");
+        ifstream fiscsv("import.csv", ios::in);
+        ofstream tabel((string)this->numeTabela + "_date", ios::binary | ios::app);
+        if (tabel) {
+            string buffer;
+            while (getline(fiscsv, buffer)) {
+                stringstream input(buffer);
+                vector<string> elemente;
+                string token = "";
+                while (getline(input, token, '#')) {
+                    elemente.push_back(token);
+                }
+                for (int i = 0; i < elemente.size(); i++) {
+                    int dim = elemente[i].size() + 1;
+                    tabel.write((char*)&dim, sizeof(int));
+                    tabel.write(elemente[i].c_str(), dim * sizeof(char));
+                }
+            }
+            fisier.close();
+            fiscsv.close();
+            tabel.close();
+        }
+    }
+
 };
 class VerificareTipuriDate {
     string numeParametru;
 public:
-    VerificareTipuriDate(char* nume)  {
+    VerificareTipuriDate(char* nume) {
         this->numeParametru = nume;
     }
 
@@ -175,7 +176,7 @@ public:
 
     bool esteLitera() {
         int dim = this->numeParametru.size();
-        for (int i = 1; i < dim-1; i++) {
+        for (int i = 1; i < dim - 1; i++) {
             if (!isalpha(this->numeParametru[i])) {
                 return false;
                 break;
@@ -201,7 +202,7 @@ public:
     void setNrLiniiTabela() {
         ifstream fisier(this->numeTabela + "_descriere.txt");
         string buffer;
-        while(getline(fisier, buffer)){
+        while (getline(fisier, buffer)) {
             this->nrLiniiTabela++;
         }
     }
@@ -236,7 +237,7 @@ public:
                             }
                         }
                         else if (cuvinte[1] == "text") {
-        
+
                             string temp(this->parametriDeInserat[i]);
                             int dim = temp.size() + 1;
                             fisier.write((char*)&dim, sizeof(int));
@@ -302,7 +303,7 @@ public:
                 tabel << endl << this->dimensiuni[i];
                 tabel << endl << this->valori_implicite[i];
             }
-            
+
             tabel.close();
         }
         else {
@@ -379,7 +380,7 @@ public:
         string temp(this->numeTabel);
         ofstream disp(temp + "_display.txt");
         if (tabel.is_open()) {
-            while(!tabel.eof()) {
+            while (!tabel.eof()) {
                 string buffer;
                 for (int i = 0; i < 4; i++) {
                     getline(tabel, buffer);
@@ -406,7 +407,7 @@ public:
     DropFisier(char* nume) {
         this->numeTabel = nume;
     }
-    void DropFis(){
+    void DropFis() {
         //ifstream fisier;
         VerificareNumeTabel verif(this->numeTabel);
         string temp1(this->numeTabel);
@@ -503,7 +504,7 @@ public:
         string temp(this->numeTabel);
         ifstream desc(temp + "_descriere.txt", ios::in);
         this->numeColoaneDesc = new string[this->nrPerechiParametri];
-        if(desc) {
+        if (desc) {
             int contor = 0;
             int i = 0;
             string buffer;
@@ -515,7 +516,7 @@ public:
                 }
                 contor++;
             }
-            this->nrColoaneDesc = contor-1;
+            this->nrColoaneDesc = contor - 1;
             desc.close();
         }
         else cout << "Nu s-a deschis" << endl;
@@ -527,7 +528,7 @@ public:
             int nrParametriFisier = 0;
             char buffer[100];
             int dim;
-            while(fisier.read((char*)&dim, sizeof(int))) {
+            while (fisier.read((char*)&dim, sizeof(int))) {
                 fisier.read(buffer, dim * sizeof(char));
                 //cout << buffer << " ";
                 nrParametriFisier++;
@@ -541,7 +542,7 @@ public:
                 parametriDinFisier[i] = buffer;
                 i++;
             }
-            
+
             if (this->numeColoanaWhere != nullptr && strcmp(this->numeColoane[0], "ALL") != 0) {
                 for (int i = 0; i < this->nrColoane; i++) {
                     for (int j = 0; j < this->nrPerechiParametri; j++) {
@@ -561,9 +562,9 @@ public:
                                 string sel = "SELECT_";
                                 string str = to_string(this->nrFisiereSelect);
                                 ofstream select(sel + str + ".txt", ios::out | ios::app);
-                                
+
                                 cout << endl << this->numeColoaneDesc[j] << ": ";
-                                select<< this->numeColoaneDesc[j] << ": ";
+                                select << this->numeColoaneDesc[j] << ": ";
                                 while (p < nrParametriFisier) {
                                     string temp(this->valoareDeFiltrat);
                                     if (parametriDinFisier[inc] == temp) {
@@ -581,7 +582,7 @@ public:
                     }
                 }
             }
-            else if(this->numeColoanaWhere == nullptr && strcmp(this->numeColoane[0], "ALL") != 0){
+            else if (this->numeColoanaWhere == nullptr && strcmp(this->numeColoane[0], "ALL") != 0) {
                 for (int i = 0; i < this->nrColoane; i++) {
                     for (int j = 0; j < this->nrPerechiParametri; j++) {
                         if (this->numeColoane[i] == this->numeColoaneDesc[j]) {
@@ -589,7 +590,7 @@ public:
                             string sel = "SELECT_";
                             string str = to_string(this->nrFisiereSelect);
                             ofstream select(sel + str + ".txt", ios::out | ios::app);
-                            
+
                             cout << endl << this->numeColoaneDesc[j] << ": ";
                             select << this->numeColoaneDesc[j] << ": ";
                             while (p < nrParametriFisier) {
@@ -601,7 +602,7 @@ public:
                         }
                     }
                     cout << endl;
-                    
+
                 }
             }
             else if (this->numeColoanaWhere == nullptr && strcmp(this->numeColoane[0], "ALL") == 0) {
@@ -612,21 +613,21 @@ public:
                     string sel = "SELECT_";
                     string str = to_string(this->nrFisiereSelect);
                     ofstream select(sel + str + ".txt", ios::out | ios::app);
-                    cout << endl <<this->numeColoaneDesc[i] << ": ";
+                    cout << endl << this->numeColoaneDesc[i] << ": ";
                     select << this->numeColoaneDesc[i] << ": ";
                     while (p < nrParametriFisier) {
-                    
+
                         cout << parametriDinFisier[p] << " ";
                         select << parametriDinFisier[p] << " ";
                         p += this->nrPerechiParametri;
                     }
                     select << endl;
-                    
+
                 }
-                
+
             }
             else if (this->numeColoanaWhere != nullptr && strcmp(this->numeColoane[0], "ALL") == 0) {
-                
+
                 for (int i = 0; i < this->nrColoaneDesc; i++) {
                     int p = i;
                     int inc = 0;
@@ -639,7 +640,7 @@ public:
                         }
                         inc++;
                     }
-                    
+
                     if (exista) {
                         string sel = "SELECT_";
                         string str = to_string(this->nrFisiereSelect);
@@ -660,7 +661,7 @@ public:
                     else {
                         cout << "Coloana de filtrat nu exista!";
                     }
-                    
+
                 }
             }
             fisier.close();
@@ -805,162 +806,162 @@ public:
 };
 
 class DeleteFisier {
-	char* numeTabel = nullptr;
-	char* coloanaWhere = nullptr;
-	char* valoareWhere = nullptr;
-	int nrPerechiParametri = 0;
-	int nrColoaneDesc = 0;
-	int nrParametriDinFisier = 0;
-	string* numeColoaneDesc = nullptr;
-	string* parametriModificati = nullptr;
-	int lg = 0;
+    char* numeTabel = nullptr;
+    char* coloanaWhere = nullptr;
+    char* valoareWhere = nullptr;
+    int nrPerechiParametri = 0;
+    int nrColoaneDesc = 0;
+    int nrParametriDinFisier = 0;
+    string* numeColoaneDesc = nullptr;
+    string* parametriModificati = nullptr;
+    int lg = 0;
 public:
-	DeleteFisier(char* numeTabel, char* colWhere, char* valWhere) {
-		this->numeTabel = numeTabel;
-		this->coloanaWhere = colWhere;
-		this->valoareWhere = valWhere;
-	}
-	void setNrPerechiParametri() {
-		string temp(this->numeTabel);
-		ifstream desc(temp + "_descriere.txt", ios::in);
-		if (desc) {
-			int contor = 0;
-			string buffer;
-			while (getline(desc, buffer)) {
-				if (contor == 3) {
-					this->nrPerechiParametri++;
-					contor = 0;
-				}
-				contor++;
-			}
-			desc.close();
-		}
-		else cout << "Nu s-a deschis" << endl;
-	}
+    DeleteFisier(char* numeTabel, char* colWhere, char* valWhere) {
+        this->numeTabel = numeTabel;
+        this->coloanaWhere = colWhere;
+        this->valoareWhere = valWhere;
+    }
+    void setNrPerechiParametri() {
+        string temp(this->numeTabel);
+        ifstream desc(temp + "_descriere.txt", ios::in);
+        if (desc) {
+            int contor = 0;
+            string buffer;
+            while (getline(desc, buffer)) {
+                if (contor == 3) {
+                    this->nrPerechiParametri++;
+                    contor = 0;
+                }
+                contor++;
+            }
+            desc.close();
+        }
+        else cout << "Nu s-a deschis" << endl;
+    }
 
-	void setNumeColoaneDesc() {
-		string temp(this->numeTabel);
-		ifstream desc(temp + "_descriere.txt", ios::in);
-		this->numeColoaneDesc = new string[this->nrPerechiParametri];
-		if (desc) {
-			int contor = 0;
-			int i = 0;
-			string buffer;
-			while (getline(desc, buffer)) {
-				if (contor == 4) contor = 0;
-				if (contor == 0) {
-					this->numeColoaneDesc[i] = buffer;
-					i++;
-				}
-				contor++;
-			}
-			this->nrColoaneDesc = contor - 1;
-			desc.close();
-		}
-		else cout << "Nu s-a deschis" << endl;
-	}
+    void setNumeColoaneDesc() {
+        string temp(this->numeTabel);
+        ifstream desc(temp + "_descriere.txt", ios::in);
+        this->numeColoaneDesc = new string[this->nrPerechiParametri];
+        if (desc) {
+            int contor = 0;
+            int i = 0;
+            string buffer;
+            while (getline(desc, buffer)) {
+                if (contor == 4) contor = 0;
+                if (contor == 0) {
+                    this->numeColoaneDesc[i] = buffer;
+                    i++;
+                }
+                contor++;
+            }
+            this->nrColoaneDesc = contor - 1;
+            desc.close();
+        }
+        else cout << "Nu s-a deschis" << endl;
+    }
 
-	void modificareParametriFisierInitial() {
-		string temp(this->numeTabel);
-		ifstream fisier(temp + "_date", ios::binary | ios::in);
-		if (fisier) {
-			int nrParametriFisier = 0;
-			char buffer[100];
-			int dim;
-			while (fisier.read((char*)&dim, sizeof(int))) {
-				fisier.read(buffer, dim * sizeof(char));
-				nrParametriFisier++;
-			}
-			this->nrParametriDinFisier = nrParametriFisier;
-			string* parametriDinFisier = new string[nrParametriFisier];
-			fisier.clear();
-			fisier.seekg(0);
-			int i = 0;
-			while (fisier.read((char*)&dim, sizeof(int))) {
-				fisier.read(buffer, dim * sizeof(char));
-				parametriDinFisier[i] = buffer;
-				i++;
-			}
-			fstream deleteFis("test.txt", ios::in | ios::out | ios::trunc);
-			if (this->coloanaWhere != nullptr) {
-				for (int i = 0; i < this->nrColoaneDesc; i++) {
-					int p = i;
-					int inc = 0;
-					bool exista = false; //pp ca nu exista 
-					//inc poate avea valori 0,1,2, etc. -> ne folosim de ele relativ la p
-					while (inc < this->nrPerechiParametri) {
-						if (this->coloanaWhere == this->numeColoaneDesc[inc]) {
-							exista = true;
-							break;
-						}
-						inc++;
-					}
-					if (exista) {
-						string atr(this->numeTabel);
-						cout << endl << this->numeColoaneDesc[i] << ": ";
-						while (p < nrParametriFisier) {
-							string temp(this->valoareWhere);
-							if (parametriDinFisier[inc] == temp) {
-								deleteFis << parametriDinFisier[p] << endl;
-								//parametriDinFisier[p] = "0";
-								inc += this->nrPerechiParametri;
-								p += this->nrPerechiParametri;
-							}
-							else {
-								cout << parametriDinFisier[p] << " ";
-								inc += this->nrPerechiParametri;
-								p += this->nrPerechiParametri;
-							}
-						}
-					}
-					else {
-						cout << "Coloana de filtrat nu exista!";
-					}
-					deleteFis << endl;
-				}
-			}
+    void modificareParametriFisierInitial() {
+        string temp(this->numeTabel);
+        ifstream fisier(temp + "_date", ios::binary | ios::in);
+        if (fisier) {
+            int nrParametriFisier = 0;
+            char buffer[100];
+            int dim;
+            while (fisier.read((char*)&dim, sizeof(int))) {
+                fisier.read(buffer, dim * sizeof(char));
+                nrParametriFisier++;
+            }
+            this->nrParametriDinFisier = nrParametriFisier;
+            string* parametriDinFisier = new string[nrParametriFisier];
+            fisier.clear();
+            fisier.seekg(0);
+            int i = 0;
+            while (fisier.read((char*)&dim, sizeof(int))) {
+                fisier.read(buffer, dim * sizeof(char));
+                parametriDinFisier[i] = buffer;
+                i++;
+            }
+            fstream deleteFis("test.txt", ios::in | ios::out | ios::trunc);
+            if (this->coloanaWhere != nullptr) {
+                for (int i = 0; i < this->nrColoaneDesc; i++) {
+                    int p = i;
+                    int inc = 0;
+                    bool exista = false; //pp ca nu exista 
+                    //inc poate avea valori 0,1,2, etc. -> ne folosim de ele relativ la p
+                    while (inc < this->nrPerechiParametri) {
+                        if (this->coloanaWhere == this->numeColoaneDesc[inc]) {
+                            exista = true;
+                            break;
+                        }
+                        inc++;
+                    }
+                    if (exista) {
+                        string atr(this->numeTabel);
+                        cout << endl << this->numeColoaneDesc[i] << ": ";
+                        while (p < nrParametriFisier) {
+                            string temp(this->valoareWhere);
+                            if (parametriDinFisier[inc] == temp) {
+                                deleteFis << parametriDinFisier[p] << endl;
+                                //parametriDinFisier[p] = "0";
+                                inc += this->nrPerechiParametri;
+                                p += this->nrPerechiParametri;
+                            }
+                            else {
+                                cout << parametriDinFisier[p] << " ";
+                                inc += this->nrPerechiParametri;
+                                p += this->nrPerechiParametri;
+                            }
+                        }
+                    }
+                    else {
+                        cout << "Coloana de filtrat nu exista!";
+                    }
+                    deleteFis << endl;
+                }
+            }
 
-			deleteFis.close();
-			cout << endl;
-		
-			ifstream citire("test.txt", ios::in);
-			vector<string> dateDeSters;
-			string temporary;
-			while (getline(citire, temporary)) {
-				if (!temporary.empty()) dateDeSters.push_back(temporary);
-				else break;
-			}
-			for (int i = 0; i < dateDeSters.size(); i++) {
-				int pozitie = 0;
-				while (pozitie < nrParametriFisier) {
-					if (dateDeSters[i] == parametriDinFisier[pozitie]) break;
-					else pozitie++;
-				}
-				int punctStart = pozitie;
-				int contor = 0;
-				while (contor < this->nrPerechiParametri && punctStart < nrParametriFisier) {
-					parametriDinFisier[punctStart + contor] = "/";
-					contor++;
-				}
-			}
-			fisier.close();
-			deleteFis.close();
-			remove("test.txt");
-			vector<string> dateDeInserat;
-			for (int i = 0; i < this->nrParametriDinFisier; i++) {
-				if (parametriDinFisier[i] != "/") {
-					dateDeInserat.push_back(parametriDinFisier[i]);
-				}
-			}
-			ofstream file(temp + "_date", ios::binary | ios::trunc | ios::out);
-			for (int i = 0; i < dateDeInserat.size(); i++) {
-				int dim = dateDeInserat[i].size() + 1;
-				file.write((char*)&dim, sizeof(int));
-				file.write(dateDeInserat[i].c_str(), dim * sizeof(char));
-			}
-			file.close();
-		}
-	}
+            deleteFis.close();
+            cout << endl;
+
+            ifstream citire("test.txt", ios::in);
+            vector<string> dateDeSters;
+            string temporary;
+            while (getline(citire, temporary)) {
+                if (!temporary.empty()) dateDeSters.push_back(temporary);
+                else break;
+            }
+            for (int i = 0; i < dateDeSters.size(); i++) {
+                int pozitie = 0;
+                while (pozitie < nrParametriFisier) {
+                    if (dateDeSters[i] == parametriDinFisier[pozitie]) break;
+                    else pozitie++;
+                }
+                int punctStart = pozitie;
+                int contor = 0;
+                while (contor < this->nrPerechiParametri && punctStart < nrParametriFisier) {
+                    parametriDinFisier[punctStart + contor] = "/";
+                    contor++;
+                }
+            }
+            fisier.close();
+            deleteFis.close();
+            remove("test.txt");
+            vector<string> dateDeInserat;
+            for (int i = 0; i < this->nrParametriDinFisier; i++) {
+                if (parametriDinFisier[i] != "/") {
+                    dateDeInserat.push_back(parametriDinFisier[i]);
+                }
+            }
+            ofstream file(temp + "_date", ios::binary | ios::trunc | ios::out);
+            for (int i = 0; i < dateDeInserat.size(); i++) {
+                int dim = dateDeInserat[i].size() + 1;
+                file.write((char*)&dim, sizeof(int));
+                file.write(dateDeInserat[i].c_str(), dim * sizeof(char));
+            }
+            file.close();
+        }
+    }
 };
 
 class ExceptieComandaGresita {
@@ -1023,7 +1024,7 @@ public:
 };
 
 class Comanda {
-    int lungime=0;
+    int lungime = 0;
     Comanda* var[10];
 public:
     virtual void printTab() = 0;
@@ -1038,7 +1039,7 @@ public:
     }
 };
 
-class Select: public Comanda {
+class Select : public Comanda {
 private:
     char** parametriIntrare = nullptr;
     int nrParametriIntrare;
@@ -1051,17 +1052,17 @@ private:
 
 public:
     void printTab() {
-        cout << "------------"<<this->numeTabela<<"------------" << endl;
-        for(int i = 0; i < nrColoane; i++) {
+        cout << "------------" << this->numeTabela << "------------" << endl;
+        for (int i = 0; i < nrColoane; i++) {
             cout << numeColoane[i] << "   " << endl;
         }
     }
-    
+
     int nrParam() {
         cout << "Numarul parametrilor este: ";
         return nrParametriIntrare;
     }
-    
+
     Select(char** parametriIntrare, int nrParam, string comandaInitiala) {
         this->parametriIntrare = parametriIntrare;
         this->nrParametriIntrare = nrParam;
@@ -1191,7 +1192,7 @@ public:
                         " este " << this->parametriIntrare[k + 4] << endl;
                     this->coloanaConditieWhere = this->parametriIntrare[k + 3];
                     nrSelect++;
-                    SelectFisier sel(this->numeColoane, this->numeTabela, this->nrColoane, this->coloanaConditieWhere, this->parametriIntrare[k+4], nrSelect);
+                    SelectFisier sel(this->numeColoane, this->numeTabela, this->nrColoane, this->coloanaConditieWhere, this->parametriIntrare[k + 4], nrSelect);
                     sel.setNrPerechiParametri();
                     sel.setNumeColoaneDesc();
                     sel.afisareDinFisier();
@@ -1219,9 +1220,9 @@ public:
     bool existaColoane() {
         if (this->nrColoane > 0)
             return true;
-       else {
+        else {
             return false;
-            }
+        }
     }
 
     ~Select() {
@@ -1250,231 +1251,231 @@ int Select::nrSelect = 0;
 
 class Create {
 private:
-	char** parametriIntrare = nullptr;
-	int nrParametriIntrare = 0;
-	char** numeColoane = nullptr;
-	char** tipuri = nullptr;
-	char** dimensiuni = nullptr;
-	char** valori_implicite = nullptr;
-	char* numeTabel = nullptr;
-	int nrPerechiParametri = 0;
-	int nrPerechiParanteze = 0;
-	string comandaInitiala = "";
+    char** parametriIntrare = nullptr;
+    int nrParametriIntrare = 0;
+    char** numeColoane = nullptr;
+    char** tipuri = nullptr;
+    char** dimensiuni = nullptr;
+    char** valori_implicite = nullptr;
+    char* numeTabel = nullptr;
+    int nrPerechiParametri = 0;
+    int nrPerechiParanteze = 0;
+    string comandaInitiala = "";
 
 public:
 
-	Create(char** parametriIntrare, int nrParam, string comandaInitiala, int nrPerechiPar) {
-		this->parametriIntrare = parametriIntrare;
-		this->nrParametriIntrare = nrParam;
-		this->comandaInitiala = comandaInitiala;
-		this->nrPerechiParanteze = nrPerechiPar;
-	}
+    Create(char** parametriIntrare, int nrParam, string comandaInitiala, int nrPerechiPar) {
+        this->parametriIntrare = parametriIntrare;
+        this->nrParametriIntrare = nrParam;
+        this->comandaInitiala = comandaInitiala;
+        this->nrPerechiParanteze = nrPerechiPar;
+    }
 
-	void filtrareElemente() {
-		if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
-			throw ExceptieComandaGresita("Eroare");
-		}
-		else {
-			if (strcmp(this->parametriIntrare[3], "IF") == 0 && strcmp(this->parametriIntrare[4], "NOT") == 0 && strcmp(this->parametriIntrare[5], "EXISTS") == 0) {
-				if (strcmp(this->parametriIntrare[7], "integer") != 0 && strcmp(this->parametriIntrare[7], "float") != 0 && strcmp(this->parametriIntrare[7], "text") != 0) {
-					throw ExceptieComandaGresita("Eroare");
-				}
-				int nrCaracteristi = this->nrParametriIntrare - 6;
-				if (nrCaracteristi % 4 != 0) {
-					throw ExceptieComandaGresita("Eroare");
-				}
+    void filtrareElemente() {
+        if (strcmp(this->parametriIntrare[1], "TABLE") != 0) {
+            throw ExceptieComandaGresita("Eroare");
+        }
+        else {
+            if (strcmp(this->parametriIntrare[3], "IF") == 0 && strcmp(this->parametriIntrare[4], "NOT") == 0 && strcmp(this->parametriIntrare[5], "EXISTS") == 0) {
+                if (strcmp(this->parametriIntrare[7], "integer") != 0 && strcmp(this->parametriIntrare[7], "float") != 0 && strcmp(this->parametriIntrare[7], "text") != 0) {
+                    throw ExceptieComandaGresita("Eroare");
+                }
+                int nrCaracteristi = this->nrParametriIntrare - 6;
+                if (nrCaracteristi % 4 != 0) {
+                    throw ExceptieComandaGresita("Eroare");
+                }
 
-				int ind = 6;
-				int pereche = 0;
-				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->nrPerechiParametri++;
-					}
-				}
-				this->valori_implicite = new char* [this->nrPerechiParametri];
-				this->dimensiuni = new char* [this->nrPerechiParametri];
-				this->tipuri = new char* [this->nrPerechiParametri];
-				this->numeColoane = new char* [this->nrPerechiParametri];
-				nrPerechiParametri = 0;
-				for (ind = 6; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						nrPerechiParametri++;
+                int ind = 6;
+                int pereche = 0;
+                for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+                    pereche++;
+                    if (pereche == 4) {
+                        pereche = 0;
+                        this->nrPerechiParametri++;
+                    }
+                }
+                this->valori_implicite = new char* [this->nrPerechiParametri];
+                this->dimensiuni = new char* [this->nrPerechiParametri];
+                this->tipuri = new char* [this->nrPerechiParametri];
+                this->numeColoane = new char* [this->nrPerechiParametri];
+                nrPerechiParametri = 0;
+                for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+                    pereche++;
+                    if (pereche == 4) {
+                        pereche = 0;
+                        this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                        nrPerechiParametri++;
 
-					}
-					else if (pereche == 3) {
-						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                    }
+                    else if (pereche == 3) {
+                        this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-					}
-					else if (pereche == 2) {
-						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                    }
+                    else if (pereche == 2) {
+                        this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-					}
-					else if (pereche == 1) {
-						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                    }
+                    else if (pereche == 1) {
+                        this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-					}
-					
-				}
-				if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
-				else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
-					cout << "Tabel: " << this->parametriIntrare[2] << endl;
-					this->numeTabel = this->parametriIntrare[2];
-					pereche = 0;
-					this->nrPerechiParametri = 0;
-					for (ind = 6; ind < this->nrParametriIntrare; ind++) {
-						pereche++;
-						if (pereche == 4) {
-							pereche = 0;
-							cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
-							this->nrPerechiParametri++;
-						}
-						else if (pereche == 3) {
-							cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
-						}
-						else if (pereche == 2) {
-							cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
-						}
-						else if (pereche == 1) {
-							cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
-						}
+                    }
 
-					}
-					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
-					VerificareNumeTabel verif(this->numeTabel);
-					if (!verif.existaTabel()) {
-						crt.generareFisiere();
-						crt.generareFisierTabele();
-					}
-					else {
-						cout << "Tabelul exista deja" << endl;
-					}
+                }
+                if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
+                else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
+                    cout << "Tabel: " << this->parametriIntrare[2] << endl;
+                    this->numeTabel = this->parametriIntrare[2];
+                    pereche = 0;
+                    this->nrPerechiParametri = 0;
+                    for (ind = 6; ind < this->nrParametriIntrare; ind++) {
+                        pereche++;
+                        if (pereche == 4) {
+                            pereche = 0;
+                            cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+                            this->nrPerechiParametri++;
+                        }
+                        else if (pereche == 3) {
+                            cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
+                        }
+                        else if (pereche == 2) {
+                            cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+                        }
+                        else if (pereche == 1) {
+                            cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+                        }
 
-				}
-				else cout << "Eroare";
-			}
-			else {
-				if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
-					throw ExceptieComandaGresita("Eroare");
-				}
-				int nrCaracteristi = this->nrParametriIntrare - 3;
-				if (nrCaracteristi % 4 != 0) {
-					throw ExceptieComandaGresita("Eroare");
-				}
+                    }
+                    CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
+                    VerificareNumeTabel verif(this->numeTabel);
+                    if (!verif.existaTabel()) {
+                        crt.generareFisiere();
+                        crt.generareFisierTabele();
+                    }
+                    else {
+                        cout << "Tabelul exista deja" << endl;
+                    }
 
-				int ind = 3;
-				int pereche = 0;
-				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->nrPerechiParametri++;
-					}
+                }
+                else cout << "Eroare";
+            }
+            else {
+                if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
+                    throw ExceptieComandaGresita("Eroare");
+                }
+                int nrCaracteristi = this->nrParametriIntrare - 3;
+                if (nrCaracteristi % 4 != 0) {
+                    throw ExceptieComandaGresita("Eroare");
+                }
 
-				}
+                int ind = 3;
+                int pereche = 0;
+                for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+                    pereche++;
+                    if (pereche == 4) {
+                        pereche = 0;
+                        this->nrPerechiParametri++;
+                    }
 
-				this->valori_implicite = new char* [this->nrPerechiParametri];
-				this->dimensiuni = new char* [this->nrPerechiParametri];
-				this->tipuri = new char* [this->nrPerechiParametri];
-				this->numeColoane = new char* [this->nrPerechiParametri];
-				nrPerechiParametri = 0;
-				for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-					pereche++;
-					if (pereche == 4) {
-						pereche = 0;
-						this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
-						nrPerechiParametri++;
+                }
 
-					}
-					else if (pereche == 3) {
-						this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                this->valori_implicite = new char* [this->nrPerechiParametri];
+                this->dimensiuni = new char* [this->nrPerechiParametri];
+                this->tipuri = new char* [this->nrPerechiParametri];
+                this->numeColoane = new char* [this->nrPerechiParametri];
+                nrPerechiParametri = 0;
+                for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+                    pereche++;
+                    if (pereche == 4) {
+                        pereche = 0;
+                        this->valori_implicite[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->valori_implicite[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                        nrPerechiParametri++;
 
-					}
-					else if (pereche == 2) {
-						this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                    }
+                    else if (pereche == 3) {
+                        this->dimensiuni[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->dimensiuni[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-					}
-					else if (pereche == 1) {
-						this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
-						strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
+                    }
+                    else if (pereche == 2) {
+                        this->tipuri[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->tipuri[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-					}
+                    }
+                    else if (pereche == 1) {
+                        this->numeColoane[this->nrPerechiParametri] = new char[strlen(this->parametriIntrare[ind])];
+                        strcpy(this->numeColoane[this->nrPerechiParametri], this->parametriIntrare[ind]);
 
-				}
-				if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
-				else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
-					cout << "Tabel: " << this->parametriIntrare[2] << endl;
-					this->numeTabel = this->parametriIntrare[2];
-					pereche = 0;
-					this->nrPerechiParametri = 0;
-					for (ind = 3; ind < this->nrParametriIntrare; ind++) {
-						pereche++;
-						if (pereche == 4) {
-							pereche = 0;
-							cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
-							this->nrPerechiParametri++;
-						}
-						else if (pereche == 3) {
-							cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
-						}
-						else if (pereche == 2) {
-							cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
-						}
-						else if (pereche == 1) {
-							cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
-						}
-					}
-					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
-					VerificareNumeTabel verif(this->numeTabel);
-					crt.generareFisierTabele();
-					crt.generareFisiere();
-					/*if (!verif.existaTabel()){
-						
-					}
-					else {
-						cout << "Tabelul exista deja" << endl;
-					}*/
-				}
-				else cout << "Eroare";
-			}
-		}
+                    }
 
-	}
+                }
+                if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
+                else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
+                    cout << "Tabel: " << this->parametriIntrare[2] << endl;
+                    this->numeTabel = this->parametriIntrare[2];
+                    pereche = 0;
+                    this->nrPerechiParametri = 0;
+                    for (ind = 3; ind < this->nrParametriIntrare; ind++) {
+                        pereche++;
+                        if (pereche == 4) {
+                            pereche = 0;
+                            cout << "Valoare implicita: " << this->valori_implicite[this->nrPerechiParametri] << endl;
+                            this->nrPerechiParametri++;
+                        }
+                        else if (pereche == 3) {
+                            cout << "Dimensiune " << this->dimensiuni[this->nrPerechiParametri] << endl;
+                        }
+                        else if (pereche == 2) {
+                            cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
+                        }
+                        else if (pereche == 1) {
+                            cout << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+                        }
+                    }
+                    CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
+                    VerificareNumeTabel verif(this->numeTabel);
+                    crt.generareFisierTabele();
+                    crt.generareFisiere();
+                    /*if (!verif.existaTabel()){
 
-	bool existaPerechiParametri() {
-		if (this->nrPerechiParametri > 0) return true;
-		else return false;
-	}
+                    }
+                    else {
+                        cout << "Tabelul exista deja" << endl;
+                    }*/
+                }
+                else cout << "Eroare";
+            }
+        }
 
-	bool parantezeCorecte() {
-		if (this->nrPerechiParametri == 1 && this->nrPerechiParanteze == 1) return true;
-		else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1) return true;
-		else return false;
-	}
+    }
 
-	//void getPerechiParametri
+    bool existaPerechiParametri() {
+        if (this->nrPerechiParametri > 0) return true;
+        else return false;
+    }
 
-	friend class Interpretor;
-	friend class ScriereFisierDate;
+    bool parantezeCorecte() {
+        if (this->nrPerechiParametri == 1 && this->nrPerechiParanteze == 1) return true;
+        else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1) return true;
+        else return false;
+    }
 
-	friend ostream& operator<<(ostream& os, Create& c) {
-		c.filtrareElemente();
-		return os;
-	}
+    //void getPerechiParametri
+
+    friend class Interpretor;
+    friend class ScriereFisierDate;
+
+    friend ostream& operator<<(ostream& os, Create& c) {
+        c.filtrareElemente();
+        return os;
+    }
 };
 
-class Update: public Comanda {
+class Update : public Comanda {
 protected:
     char** parametriIntrare = nullptr;
     int nrParametriIntrare;
@@ -1490,16 +1491,16 @@ public:
         cout << "Se actualizeaza coloana: " << this->numeColoana << endl;
         cout << "Avand conditia " << this->numeColWhere << " = " << this->valoareWhere << endl;
     }
-     
+
     int nrParam() {
-        for(int i = 0; i < nrParametriIntrare; i++) {
+        for (int i = 0; i < nrParametriIntrare; i++) {
             cout << "Parametri comenzii introdusi sunt:" << endl;
             cout << this->parametriIntrare[i];
-       }
+        }
         cout << endl;
         return 1;
     }
-    
+
     Update(char** parametriIntrare, int nrParam) {
         this->parametriIntrare = parametriIntrare;
         this->nrParametriIntrare = nrParam;
@@ -1652,12 +1653,12 @@ public:
                 cout << "Coloane:  " << nrParametriInsert << endl;
                 for (int i = 0; i < nrParametriInsert; i++) {
                     cout << "Coloana " << i + 1 << " value: " << parametriIntrare[i + 4] << endl;
-                    this->parametriInsert[i] = this->parametriIntrare[i+4];
+                    this->parametriInsert[i] = this->parametriIntrare[i + 4];
                 }
                 ScriereFisierDate scrie(this->parametriInsert, this->nrParametriInserare, this->numeTabela);
                 scrie.setNrLiniiTabela();
                 scrie.scriereDate();
-                
+
             }
 
         }
@@ -1678,7 +1679,7 @@ public:
 
 };
 
-class Delete: public Comanda {
+class Delete : public Comanda {
 protected:
     char** parametriIntrare = nullptr;
     int nrParametriIntrare;
@@ -1692,12 +1693,12 @@ public:
         cout << "Tabela pentru care se sterge o inregistrare este: " << this->numeTabel << endl;
         cout << "Inregistrarea " << this->valoareWhere << " din coloana " << this->coloanaWhere << " va fi eliminata" << endl;
     }
-    
+
     int nrParam() {
         cout << "Parametri comenzii DELETE sunt in numar de: "; return this->nrParametriIntrare;
-        
+
     }
-    
+
     Delete(char** parametriIntrare, int nrParam) {
         this->parametriIntrare = parametriIntrare;
         this->nrParametriIntrare = nrParam;
@@ -1741,7 +1742,6 @@ public:
                 del.setNrPerechiParametri();
                 del.setNumeColoaneDesc();
                 del.modificareParametriFisierInitial();
-                del.afisare();
             }
 
         }
@@ -1780,7 +1780,7 @@ public:
             throw ExceptieComandaGresita("Eroare");
         }
         else {
-            cout << "Se vor insera coloanele din fisierul " << parametriIntrare[2] << " in tabela " << parametriIntrare[1]  << endl;
+            cout << "Se vor insera coloanele din fisierul " << parametriIntrare[2] << " in tabela " << parametriIntrare[1] << endl;
             this->numeTabela = this->parametriIntrare[1];
             this->numeFisier = this->parametriIntrare[2];
             ImportFisier import(this->numeFisier, this->nrParametriIntrare, this->numeTabela);
@@ -1999,7 +1999,7 @@ public:
     friend class Tabela;
 };
 
-class Tabela: public Coloana {
+class Tabela : public Coloana {
 private:
     int id;
     string numeTabela;
@@ -2007,16 +2007,16 @@ private:
     Coloana* coloane; //descriere relatie has-a
     int nrColoane;
 public:
-    Tabela(int Id, string Nume, string Tip): Coloana(Nume, Tip) {
+    Tabela(int Id, string Nume, string Tip) : Coloana(Nume, Tip) {
         this->id = Id;
     }
-    
+
     Tabela() : id(nrTabela) {
         this->numeTabela = "";
         this->nrColoane = 0;
         nrTabela++;
     }
-    
+
     Tabela(string nume) : id(nrTabela) {
         this->numeTabela = nume;
         nrTabela++;
@@ -2087,7 +2087,7 @@ int Tabela::nrTabela = 0;
 class Users {
 protected:
     int id = 0;
-    static int nrUsers;
+    int nrUsers;
     int* Modificari = nullptr;
     string nume;
     int noEntries;
@@ -2134,7 +2134,7 @@ public:
         os >> u.noEntries;
         return os;
     }
- 
+
     friend ostream& operator<<(ostream& os, Users& u)
     {
         os << u.nume << endl;
@@ -2142,16 +2142,18 @@ public:
         return os;
     }
 
+    //supraincarcare <
+
 };
 
-class BazaDeDate: public Users {
-  Tabela* tabela;  //relatie has-a
+class BazaDeDate : public Users {
+    Tabela* tabela;  //relatie has-a
     int cod = 0;
     string nume = " ";
 public:
-    BazaDeDate(string Nume, int* Modif, int Cod): Users(Nume, *Modif) {
-         this->cod = Cod;
-       }
+    BazaDeDate(string Nume, int* Modif, int Cod) : Users(Nume, *Modif) {
+        this->cod = Cod;
+    }
 };
 
 class Interpretor {
@@ -2199,21 +2201,21 @@ public:
     int getLungime() {
         return strlen(numeComanda);
     }
-    
+
     void print() {
-        for(int i = 0; i < nrParametri; i++) {
+        for (int i = 0; i < nrParametri; i++) {
             cout << "Comanda SQL introdusa: " << parametriComanda[i] << endl;
         }
     }
-    
+
     void initializareComenzi() {
         if (strcmp(this->numeComanda, "SELECT") == 0) {
             VerificareFormatParanteze verif(this->comandaInitiala);
             if (verif.existaParanteze()) {
                 if (verif.isBalanced()) {
                     Select s(this->parametriComanda, this->nrParametri, this->comandaInitiala);
-                    
-                    
+
+
                     cout << s;
                     if (!s.existaColoane()) {
                         cout << "Eroare";
@@ -2225,8 +2227,8 @@ public:
             else if (strcmp(this->parametriComanda[1], "ALL") == 0) {
                 Select s(this->parametriComanda, this->nrParametri, this->comandaInitiala);
                 s.filtrareElemente();
-            
-                
+
+
             }
             else cout << "Eroare";
         }
@@ -2306,6 +2308,6 @@ public:
 
 class Abstract {
 public:
-     virtual int getLungime() = 0;
-     virtual void print() = 0;
- };
+    virtual int getLungime() = 0;
+    virtual void print() = 0;
+};
