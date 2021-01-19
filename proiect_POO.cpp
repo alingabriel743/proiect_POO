@@ -1,17 +1,17 @@
 #include <iostream>
 #include <string>
 #pragma warning(disable:4996)
-#include "[Proiect][1059][Titeche_Anamaria]clasa.h"
+#include "clase.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	bool tastatura = true; //presupunem ca utilizatorul doreste introducerea comenzilor de la tastatura
+	bool tastatura = true; 
 	char decizie;
 	cout << "Bine ati venit! Doriti sa utilizati un fisier de comenzi sau sa utilizati tastatura? Fisier - F / Tastatura - T" << endl;
 	cin >> decizie;
 	if (decizie == 'T') {
-		bool exit = false; //utilizatorul continua sa introduca comenzi
+		bool exit = false;
 		char alegere;
 		while (!exit) {
 			cout << "Introduceti comanda: " << endl;
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
 				Interpretor interp(comanda, comanda.size());
 				cout << interp;
 			}
-			catch (ExceptieComandaGresita& ex) {
+			catch (ExceptieComandaGresita & ex) {
 				cout << ex.getMesaj() << endl;
 			}
 			cout << endl << "Continuati sa introduceti comenzi? D/N" << endl;
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 				cout << interp;
 				cout << endl;
 			}
-			catch (ExceptieComandaGresita& ex) {
+			catch (ExceptieComandaGresita & ex) {
 				cout << ex.getMesaj() << endl;
 			}
 		}
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 	Users u1("Popescu Andrei", 2), u2("Titeche Ana", 7), u3("Vaduva Alin", 10), u4("John Michaels", 18);
 	vector<Users> us(5);
 	us.reserve(6);
-
+	cout << endl;
 	cout << "-------------VECTOR-------------" << endl;
 	cout << "\nDimensiunea vectorului: " << us.size() << " cu extindere pana la " << us.capacity() << " elemente." << endl;
 	Users u5("Silviu", 777);
@@ -67,7 +67,10 @@ int main(int argc, char* argv[]) {
 	}
 	cout << endl;
 	cout << "-------------LIST-------------";
-	list<Users> li = { u1, u2, u3, u4, u5 };
+	list<Users> li;
+	for (int i = 0; i < 5; i++) {
+		li.push_back(us[i]);
+	}
 
 	list<Users>::iterator it;
 	for (it = li.begin(); it != li.end(); it++) {
