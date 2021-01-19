@@ -1021,7 +1021,6 @@ public:
 
 class Create {
 private:
-	static int create;
 	char** parametriIntrare = nullptr;
 	int nrParametriIntrare = 0;
 	char** numeColoane = nullptr;
@@ -1032,13 +1031,14 @@ private:
 	int nrPerechiParametri = 0;
 	int nrPerechiParanteze = 0;
 	string comandaInitiala = "";
+
 public:
+
 	Create(char** parametriIntrare, int nrParam, string comandaInitiala, int nrPerechiPar) {
 		this->parametriIntrare = parametriIntrare;
 		this->nrParametriIntrare = nrParam;
 		this->comandaInitiala = comandaInitiala;
 		this->nrPerechiParanteze = nrPerechiPar;
-		create++;
 	}
 
 	void filtrareElemente() {
@@ -1130,7 +1130,7 @@ public:
 					}
 
 				}
-				else cout << "Eroare" << endl;
+				else cout << "Eroare"<<endl ;
 			}
 			else {
 				if (strcmp(this->parametriIntrare[4], "integer") != 0 && strcmp(this->parametriIntrare[4], "float") != 0 && strcmp(this->parametriIntrare[4], "text") != 0) {
@@ -1185,7 +1185,7 @@ public:
 				}
 				if (this->nrPerechiParametri != this->nrPerechiParanteze - 1) cout << "Eroare";
 				else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1 || (this->nrPerechiParametri == 1 && this->nrPerechiParametri == 1)) {
-					cout << endl << "Tabel: " << this->parametriIntrare[2] << endl;
+					cout <<endl << "Tabel: " << this->parametriIntrare[2] << endl;
 					this->numeTabel = this->parametriIntrare[2];
 					pereche = 0;
 					this->nrPerechiParametri = 0;
@@ -1203,47 +1203,25 @@ public:
 							cout << "Tip: " << this->tipuri[this->nrPerechiParametri] << endl;
 						}
 						else if (pereche == 1) {
-							cout << endl << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
+							cout <<endl << "Nume coloana: " << this->numeColoane[this->nrPerechiParametri] << endl;
 						}
 					}
 					CreareFisier crt(this->parametriIntrare[2], this->numeColoane, this->tipuri, this->dimensiuni, this->valori_implicite, this->nrPerechiParametri);
 					VerificareNumeTabel verif(this->numeTabel);
-					if (!verif.existaTabel()) {
-						crt.generareFisierTabele();
-						crt.generareFisiere();
+					crt.generareFisierTabele();
+					crt.generareFisiere();
+					/*if (!verif.existaTabel()){
+
 					}
 					else {
-						cout << "Tabelul exista deja!";
-					}
-					
+						cout << "Tabelul exista deja" << endl;
+					}*/
 				}
 				else cout << "Eroare";
 			}
 		}
 
 	}
-
-	bool existaPerechiParametri() {
-		if (this->nrPerechiParametri > 0) return true;
-		else return false;
-	}
-
-	bool parantezeCorecte() {
-		if (this->nrPerechiParametri == 1 && this->nrPerechiParanteze == 1) return true;
-		else if (this->nrPerechiParametri == this->nrPerechiParanteze - 1) return true;
-		else return false;
-	}
-
-	//void getPerechiParametri
-
-	friend class Interpretor;
-	friend class ScriereFisierDate;
-
-	friend ostream& operator<<(ostream& os, Create& c) {
-		c.filtrareElemente();
-		return os;
-	}
-};
 
 	bool existaPerechiParametri() {
 		if (this->nrPerechiParametri > 0) return true;
@@ -1898,7 +1876,7 @@ public:
 	Users(const Users& u) : id(nrUsers++) {
 		this->nume = u.nume;
 		this->Modificari = new int[u.noEntries];
-		for (int i = 0; i < u.noEntries; i++) Modificari[i] = u.Modificari[i];
+		/*for (int i = 0; i < u.noEntries; i++) Modificari[i] = u.Modificari[i];*/
 		this->noEntries = u.noEntries;
 	}
 
@@ -1926,12 +1904,12 @@ public:
 		return os;
 	}
 	bool operator <(const Users& u) const {
-		if (noEntries < u.noEntries) {
-			return true;
-		}
+          if(noEntries < u.noEntries) {
+              return true;
+          }
 
-		return false;
-	}
+          return false;
+       }
 
 };
 int Users::nrUsers = 0;
