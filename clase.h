@@ -1903,6 +1903,18 @@ public:
 		os << u.noEntries << endl;
 		return os;
 	}
+	void operator=(Users& c) {
+            this->id = c.id;
+            this->nrUsers = c.nrUsers;
+            this->nume = c.nume;
+            this->noEntries = c.noEntries;
+           /* for (int i = 0; i < this->noEntries; i++) {
+                this->Modificari[i] = c.Modificari[i];
+            } */
+            for (int i = 0; i < 15; i++) {
+                this->sectiuniAlocate[i] = c.sectiuniAlocate[i];
+            }
+        }
 	bool operator <(const Users& u) const {
           if(noEntries < u.noEntries) {
               return true;
