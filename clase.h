@@ -208,8 +208,9 @@ public:
 	}
 	void scriereDate() {
 		VerificareNumeTabel verif(this->numeTabela);
-		if (verif.existaTabel()) {
+		if (verif.existaTabel()) {  // merge chiar daca e !
 			fstream fisier(this->numeTabela + "_date", ios::in | ios::out | ios::binary | ios::app);
+			//trebuie sa verificam daca exista deja this-:numeFisier_descrire.txt
 			ifstream desc(this->numeTabela + "_descriere.txt", ios::in);
 			if (fisier) {
 				if (this->nrLiniiTabela == this->nrParametri * 4) {
@@ -345,7 +346,7 @@ public:
 		else cout << "Nu s-a deschis";
 
 		ofstream fisier("numeTabeleFisiere.txt", ios::out | ios::app);
-		if (fisier && !exista) {
+		if (fisier && exista==false) {
 			fisier << endl << this->numeTabel;
 			fisier.close();
 		}
@@ -356,7 +357,7 @@ public:
 class DisplayFisier {
 private:
 	char* numeTabel = nullptr;
-	int nrPerechiParametri = 0;  //trb sa le numar
+	int nrPerechiParametri = 0; 
 
 public:
 	DisplayFisier(char* nume) {
@@ -1851,11 +1852,11 @@ protected:
 	int id = 0;
 	static int nrUsers;
 	int* Modificari = nullptr;
-	string nume;
 	int noEntries;
 	int sectiuniAlocate[15];
 	int* pe = nullptr;
 public:
+	string nume;
 	Users() : id(nrUsers++) {
 		this->noEntries = 0;
 		this->nume = "None";
@@ -1901,6 +1902,13 @@ public:
 		os << u.nume << endl;
 		os << u.noEntries << endl;
 		return os;
+	}
+	bool operator <(const Users& u) const {
+		if (noEntries < u.noEntries) {
+			return true;
+		}
+
+		return false;
 	}
 
 };
