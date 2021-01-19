@@ -49,43 +49,48 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	Users u1("Popescu Andrei", 2), u2("Ana Titeche", 7), u3("Vaduva Alin", 10), u4("John Michaels", 18);
-	vector<Users> us(10);
-	us.reserve(20);
-	cout << "\nDimensiunea vectorului: " << us.size() << " cu extindere pana la " << us.capacity() << " elemente" << endl;
+	Users u1("Popescu Andrei", 2), u2("Titeche Ana", 7), u3("Vaduva Alin", 10), u4("John Michaels", 18);
+	vector<Users> us(5);
+	us.reserve(6);
+
+	cout << "-------------VECTOR-------------" << endl;
+	cout << "\nDimensiunea vectorului: " << us.size() << " cu extindere pana la " << us.capacity() << " elemente." << endl;
+	Users u5("Silviu", 777);
 	us[0] = u1;
 	us[1] = u2;
-	us[3] = u3;
-	us.push_back(u4);
-
+	us[2] = u3;
+	us[3] = u4;
+	us[4] = u5;
 	vector<Users>::iterator i;
 	for (i = us.begin(); i != us.end(); i++) {
 		cout << *i << " ";
 	}
 	cout << endl;
+	cout << "-------------LIST-------------";
+	list<Users> li = { u1, u2, u3, u4, u5 };
 
-	list<Users> li = { u1, u2, u3, u4 };
 	list<Users>::iterator it;
-	Users u5("Silviu", 777);
-	li.push_back(u5);
 	for (it = li.begin(); it != li.end(); it++) {
+		cout << endl;
 		cout << *it << " ";
 	}
 
-	/*set<Users> s1 = { u1, u2, u3, u4, u5 };
+	cout << "--------------SET-------------" << endl;
+	Users p[5] = { u1, u2, u3, u4 };
+	set<Users> s1;
+	s1.insert(p[1]); s1.insert(p[2]); s1.insert(p[3]);
 	set<Users>::iterator its;
-	for (its = s1.begin(); its != s1.end(); its++) {
-		cout << &its << ", ";
-		cout << endl;
-	}*/
+	its = s1.find(p[3]);
+	its != s1.end() ?
+		cout << "\nGasit: " << its->nume << endl : cout << "\n Negasit! ";
 
 	map<string, int> mp;
 	mp.insert(pair<string, int>("Popescu", 2));
-	mp.insert(pair<string, int>("Ana", 7));
+	mp.insert(pair<string, int>("Titeche", 7));
 	mp.insert(pair<string, int>("Vaduva", 10));
 	mp.insert(pair<string, int>("Michaels", 18));
 	mp.insert(pair<string, int>("Silviu", 777));
-
+	cout << endl << "-------------MAP-------------" << endl;
 	map<string, int>::iterator itr;
 	cout << "\nMapa mp este : \n";
 	cout << "\tNUME\tID\n";
